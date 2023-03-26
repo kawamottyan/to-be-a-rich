@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block main %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Keiba Prediction *WAIT 3SEC!!*</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Prediction Input:</h5>
+                <div>frame_number: <span id="sl"></span></div>
+                <div>horse_number: <span id="sw"></span></div>
+                <div>horse_weight: <span id="pl"></span></div>
+                <div>distance: <span id="pw"></span></div>
+                <h5 class="pt-3">Prediction rank:</h5>
+                <div id="prediction"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a class="btn btn-primary" href="/results" role="button">View DB</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-5">
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <h1>Keiba Prediction</h1>
+            <form action="" id="post-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="frame_number">frame_number</label>
+                    <input type="number" step="1" class="form-control" id="frame_number" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="horse_number">horse_number</label>
+                    <input type="number" step="1" class="form-control" id="horse_number" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="horse_weight">horse_weight</label>
+                    <input type="number" step="1" class="form-control" id="horse_weight" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="distance">distance</label>
+                    <input type="number" step="1" class="form-control" id="distance" placeholder="" required>
+                </div>
+                <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('submit', '#post-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "predict:submit_prediction" %}',
+            data:{
+                frame_number:$('#frame_number').val(),
+                horse_number:$('#horse_number').val(),
+                horse_weight:$('#horse_weight').val(),
+                distance:$('#distance').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success:function(json) {
+                document.forms["post-form"].reset();
+                document.getElementById("prediction").innerHTML = json['result']
+                document.getElementById("sl").innerHTML = json['frame_number']
+                document.getElementById("sw").innerHTML = json['horse_number']
+                document.getElementById("pl").innerHTML = json['horse_weight']
+                document.getElementById("pw").innerHTML = json['distance']
+            },
+            error : function(xhr,errmsg,err) {
+
+            }
+        });
+    })
+</script>
+
+{% endblock %}
+

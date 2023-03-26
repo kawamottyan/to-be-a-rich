@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="container pt-5">
+        <div class="row">
+
+        <h1>Prediction Results</h1>
+
+            <table class="table">
+                <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">frame_number</th>
+                <th scope="col">horse_number</th>
+                <th scope="col">horse_weight</th>
+                <th scope="col">distance</th>
+                <th scope="col">Prediction</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in dataset %}
+                    <tr>
+                    <th scope="row">{{ data.id }}</th>
+                    <td>{{ data.frame_number }}</td>
+                    <td>{{ data.horse_number }}</td>
+                    <td>{{ data.horse_weight }}</td>
+                    <td>{{ data.distance }}</td>
+                    <td>{{ data.rank }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
