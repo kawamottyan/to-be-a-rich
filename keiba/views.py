@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
+import numpy as np
 from .models import PredResults
 
 def predict(request):
@@ -76,17 +77,78 @@ def predict_chances(request):
         # Make prediction
         #result = model.predict([[frame_number, horse_number, horse_weight, distance]])
 
-        rank = y_pred[0]
+        # rank = y_pred[0]
+
+        # PredResults.objects.create(one=one, two=two, three=three, four=four, five=five,
+        #                            six=six, seven=seven, eight=eight, nine=nine, ten=ten,
+        #                            eleven=eleven, twelve=twelve, thirteen=thirteen, fourteen=fourteen, fifteen=fifteen,
+        #                            sixteen=sixteen, seventeen=seventeen, eighteen=eighteen, rank=rank1)
+
+        # return JsonResponse({'result': rank, 'one': one, 'two': two, 'three': three, 'four': four, 'five': five,
+        #                       'six': six, 'seven': seven, 'eight': eight, 'nine': nine, 'ten': ten,
+        #                        'eleven': eleven, 'twelve': twelve, 'thirteen': thirteen, 'fourteen': fourteen, 'fifteen': fifteen,
+        #                      'sixteen': sixteen, 'seventeen': seventeen, 'eighteen': eighteen},
+        #                     safe=False)
+
+        ranknum = np.arange(1, 19)
+        sorted_rank = ranknum[np.argsort(y_pred)[::-1]]
+
+        rank1 = sorted_rank[0]
+        rank1 = int(rank1)
+        rank2 = sorted_rank[1]
+        rank2 = int(rank2)
+        rank3 = sorted_rank[2]
+        rank3 = int(rank3)
+        rank4 = sorted_rank[3]
+        rank4 = int(rank4)
+        rank5 = sorted_rank[4]
+        rank5 = int(rank5)
+        rank6 = sorted_rank[5]
+        rank6 = int(rank6)
+        rank7 = sorted_rank[6]
+        rank7 = int(rank7)
+        rank8 = sorted_rank[7]
+        rank8 = int(rank8)
+        rank9 = sorted_rank[8]
+        rank9 = int(rank9)
+        rank10 = sorted_rank[9]
+        rank10 = int(rank10)
+        rank11 = sorted_rank[10]
+        rank11 = int(rank11)
+        rank12 = sorted_rank[11]
+        rank12 = int(rank12)
+        rank13 = sorted_rank[12]
+        rank13 = int(rank13)
+        rank14 = sorted_rank[13]
+        rank14 = int(rank14)
+        rank15 = sorted_rank[14]
+        rank15 = int(rank15)
+        rank16 = sorted_rank[15]
+        rank16 = int(rank16)
+        rank17 = sorted_rank[16]
+        rank17 = int(rank17)
+        rank18 = sorted_rank[17]
+        rank18 = int(rank18)
+
 
         PredResults.objects.create(one=one, two=two, three=three, four=four, five=five,
                                    six=six, seven=seven, eight=eight, nine=nine, ten=ten,
                                    eleven=eleven, twelve=twelve, thirteen=thirteen, fourteen=fourteen, fifteen=fifteen,
-                                   sixteen=sixteen, seventeen=seventeen, eighteen=eighteen, rank=rank)
+                                   sixteen=sixteen, seventeen=seventeen, eighteen=eighteen,# rank=rank1
+                                   )
 
-        return JsonResponse({'result': rank, 'one': one, 'two': two, 'three': three, 'four': four, 'five': five,
-                              'six': six, 'seven': seven, 'eight': eight, 'nine': nine, 'ten': ten,
-                               'eleven': eleven, 'twelve': twelve, 'thirteen': thirteen, 'fourteen': fourteen, 'fifteen': fifteen,
-                             'sixteen': sixteen, 'seventeen': seventeen, 'eighteen': eighteen},
+        # PredResults.objects.create(rank1=rank1, rank2=rank2, rank3=rank3, rank4=rank4, rank5=rank5,
+        #                            rank6=rank6, rank7=rank7, rank8=rank8, rank9=rank9, rank10=rank10,
+        #                            rank11=rank11, rank12=rank12, rank13=rank13, rank14=rank14, rank15=rank15,
+        #                            rank16=rank16, rank17=rank17, rank18=rank18,
+        #                            )
+
+        return JsonResponse({
+                            #'result': rank1, 
+                            'one': rank1, 'two': rank2, 'three': rank3, 'four': rank4, 'five': rank5,
+                            'six': rank6, 'seven': rank7, 'eight': rank8, 'nine': rank9, 'ten': rank10,
+                            'eleven': rank11, 'twelve': rank12, 'thirteen': rank13, 'fourteen': rank14, 'fifteen': rank15,
+                            'sixteen': rank16, 'seventeen': rank17, 'eighteen': rank18},
                             safe=False)
 
 

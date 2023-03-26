@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 
 {% block main %}
+<!--Alert-->
+<div class="container">
+    <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+        来週の<strong>大阪杯</strong>は木曜に更新します。
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+</div>
+
+<!--End Alert-->
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -12,7 +21,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <h5>馬体重 Input:</h5>
+                <h5>予想順位:</h5>
                 <div>トゥラヴェスーラ: <span id="on"></span></div>
                 <div>ウォーターナビレラ: <span id="tw"></span></div>
                 <div>キルロード: <span id="th"></span></div>
@@ -31,8 +40,10 @@
                 <div>グレナディアガーズ: <span id="sixt"></span></div>
                 <div>ボンボヤージ: <span id="sev"></span></div>
                 <div>ウインマーベル: <span id="eig"></span></div>
-                <h5 class="pt-3">Prediction rank:</h5>
+                <!--
+                <h5 class="pt-3">確率:</h5>
                 <div id="prediction"></div>
+                -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -42,10 +53,11 @@
     </div>
 </div>
 
-<div class="container pt-5">
+<div class="container pt-2">
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <h1>Keiba Prediction</h1>
+            <h1>高松宮記念</h1>
+            <h5 class="pt-3 pb-3">馬体重記入</h5>
             <form action="" id="post-form">
                 {% csrf_token %}
 
@@ -111,7 +123,7 @@
                 </div>
                 <div class="form-group">
                     <label for="sixteen">グレナディアガーズ</label>
-                    <input type="number" step="1" class="form-control" id="sixteen" value="468.0" required>
+                    <input type="number" step="0.1" class="form-control" id="sixteen" value="468.0" required>
                 </div>
                 <div class="form-group">
                     <label for="seventeen">ボンボヤージ</label>
@@ -122,7 +134,7 @@
                     <input type="number" step="0.1" class="form-control" id="eighteen" value="474.0" required>
                 </div>
 
-                <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
+                <button type="submit" value="Submit" class="btn btn-primary mb-5" data-toggle="modal" data-target="#exampleModal">Submit</button>
             </form>
         </div>
     </div>
@@ -158,7 +170,7 @@
             },
             success:function(json) {
                 document.forms["post-form"].reset();
-                document.getElementById("prediction").innerHTML = json['result']
+                /*document.getElementById("prediction").innerHTML = json['result']*/
                 document.getElementById("on").innerHTML = json['one']
                 document.getElementById("tw").innerHTML = json['two']
                 document.getElementById("th").innerHTML = json['three']

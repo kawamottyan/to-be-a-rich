@@ -20,7 +20,7 @@ class PredResults(models.Model):
     sixteen = models.FloatField()
     seventeen = models.FloatField()
     eighteen = models.FloatField()
-    rank = models.FloatField()
+    #rank = models.FloatField()
 
     def __str__(self):
         return self.rank
