@@ -6,17 +6,31 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Keiba Prediction *WAIT 3SEC!!*</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Keiba Prediction *WAIT 5 SEC!!*</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <h5>Prediction Input:</h5>
-                <div>frame_number: <span id="sl"></span></div>
-                <div>horse_number: <span id="sw"></span></div>
-                <div>horse_weight: <span id="pl"></span></div>
-                <div>distance: <span id="pw"></span></div>
+                <h5>馬体重 Input:</h5>
+                <div>トゥラヴェスーラ: <span id="on"></span></div>
+                <div>ウォーターナビレラ: <span id="tw"></span></div>
+                <div>キルロード: <span id="th"></span></div>
+                <div>ダディーズビビッド: <span id="fo"></span></div>
+                <div>メイケイエール: <span id="fi"></span></div>
+                <div>ナランフレグ: <span id="si"></span></div>
+                <div>ヴェントヴォーチェ: <span id="se"></span></div>
+                <div>ロータスランド: <span id="ei"></span></div>
+                <div>ディヴィナシオン: <span id="ni"></span></div>
+                <div>オパールシャルム: <span id="te"></span></div>
+                <div>ピクシーナイト: <span id="ele"></span></div>
+                <div>アグリ: <span id="twe"></span></div>
+                <div>ファストフォース: <span id="thi"></span></div>
+                <div>トウシンマカオ: <span id="fou"></span></div>
+                <div>ナムラクレア: <span id="fif"></span></div>
+                <div>グレナディアガーズ: <span id="sixt"></span></div>
+                <div>ボンボヤージ: <span id="sev"></span></div>
+                <div>ウインマーベル: <span id="eig"></span></div>
                 <h5 class="pt-3">Prediction rank:</h5>
                 <div id="prediction"></div>
             </div>
@@ -34,22 +48,80 @@
             <h1>Keiba Prediction</h1>
             <form action="" id="post-form">
                 {% csrf_token %}
+
                 <div class="form-group">
-                    <label for="frame_number">frame_number</label>
-                    <input type="number" step="1" class="form-control" id="frame_number" placeholder="" required>
+                    <label for="one">トゥラヴェスーラ</label>
+                    <input type="number" step="0.1" class="form-control" id="one" value="484.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="horse_number">horse_number</label>
-                    <input type="number" step="1" class="form-control" id="horse_number" placeholder="" required>
+                    <label for="two">ウォーターナビレラ</label>
+                    <input type="number" step="0.1" class="form-control" id="two" value="470.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="horse_weight">horse_weight</label>
-                    <input type="number" step="1" class="form-control" id="horse_weight" placeholder="" required>
+                    <label for="three">キルロード</label>
+                    <input type="number" step="0.1" class="form-control" id="three" value="502.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="distance">distance</label>
-                    <input type="number" step="1" class="form-control" id="distance" placeholder="" required>
+                    <label for="four">ダディーズビビッド</label>
+                    <input type="number" step="0.1" class="form-control" id="four" value="512.0" required>
                 </div>
+                <div class="form-group">
+                    <label for="five">メイケイエール</label>
+                    <input type="number" step="0.1" class="form-control" id="five" value="486.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="six">ナランフレグ</label>
+                    <input type="number" step="0.1" class="form-control" id="six" value="492.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="seven">ヴェントヴォーチェ</label>
+                    <input type="number" step="0.1" class="form-control" id="seven" value="520.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="eight">ロータスランド</label>
+                    <input type="number" step="0.1" class="form-control" id="eight" value="484.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="nine">ディヴィナシオン</label>
+                    <input type="number" step="0.1" class="form-control" id="nine" value="478.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="ten">オパールシャルム</label>
+                    <input type="number" step="0.1" class="form-control" id="ten" value="476.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="eleven">ピクシーナイト</label>
+                    <input type="number" step="0.1" class="form-control" id="eleven" value="530.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="twelve">アグリ</label>
+                    <input type="number" step="0.1" class="form-control" id="twelve" value="492.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="thirteen">ファストフォース</label>
+                    <input type="number" step="0.1" class="form-control" id="thirteen" value="518.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="fourteen">トウシンマカオ</label>
+                    <input type="number" step="0.1" class="form-control" id="fourteen" value="462.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="fifteen">ナムラクレア</label>
+                    <input type="number" step="0.1" class="form-control" id="fifteen" value="466.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="sixteen">グレナディアガーズ</label>
+                    <input type="number" step="1" class="form-control" id="sixteen" value="468.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="seventeen">ボンボヤージ</label>
+                    <input type="number" step="0.1" class="form-control" id="seventeen" value="436.0" required>
+                </div>
+                <div class="form-group">
+                    <label for="eighteen">ウインマーベル</label>
+                    <input type="number" step="0.1" class="form-control" id="eighteen" value="474.0" required>
+                </div>
+
                 <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
             </form>
         </div>
@@ -63,20 +135,48 @@
             type:'POST',
             url:'{% url "predict:submit_prediction" %}',
             data:{
-                frame_number:$('#frame_number').val(),
-                horse_number:$('#horse_number').val(),
-                horse_weight:$('#horse_weight').val(),
-                distance:$('#distance').val(),
+                one:$('#one').val(),
+                two:$('#two').val(),
+                three:$('#three').val(),
+                four:$('#four').val(),
+                five:$('#five').val(),
+                six:$('#six').val(),
+                seven:$('#seven').val(),
+                eight:$('#eight').val(),
+                nine:$('#nine').val(),
+                ten:$('#ten').val(),
+                eleven:$('#eleven').val(),
+                twelve:$('#twelve').val(),
+                thirteen:$('#thirteen').val(),
+                fourteen:$('#fourteen').val(),
+                fifteen:$('#fifteen').val(),
+                sixteen:$('#sixteen').val(),
+                seventeen:$('#seventeen').val(),
+                eighteen:$('#eighteen').val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'
             },
             success:function(json) {
                 document.forms["post-form"].reset();
                 document.getElementById("prediction").innerHTML = json['result']
-                document.getElementById("sl").innerHTML = json['frame_number']
-                document.getElementById("sw").innerHTML = json['horse_number']
-                document.getElementById("pl").innerHTML = json['horse_weight']
-                document.getElementById("pw").innerHTML = json['distance']
+                document.getElementById("on").innerHTML = json['one']
+                document.getElementById("tw").innerHTML = json['two']
+                document.getElementById("th").innerHTML = json['three']
+                document.getElementById("fo").innerHTML = json['four']
+                document.getElementById("fi").innerHTML = json['five']
+                document.getElementById("si").innerHTML = json['six']
+                document.getElementById("se").innerHTML = json['seven']
+                document.getElementById("ei").innerHTML = json['eight']
+                document.getElementById("ni").innerHTML = json['nine']
+                document.getElementById("te").innerHTML = json['ten']
+                document.getElementById("ele").innerHTML = json['eleven']
+                document.getElementById("twe").innerHTML = json['twelve']
+                document.getElementById("thi").innerHTML = json['thirteen']
+                document.getElementById("fou").innerHTML = json['fourteen']
+                document.getElementById("fif").innerHTML = json['fifteen']
+                document.getElementById("sixt").innerHTML = json['sixteen']
+                document.getElementById("sev").innerHTML = json['seventeen']
+                document.getElementById("eig").innerHTML = json['eighteen']
             },
             error : function(xhr,errmsg,err) {
 
