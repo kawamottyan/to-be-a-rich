@@ -65,7 +65,9 @@ def predict_chances(request):
         today_race_X.loc[today_race_X['horse_number'] == 18, 'horse_weight'] = eighteen
 
         today_race_X = today_race_X.sort_values('horse_number')
+        
         train_baskets = today_race_X.groupby(["race_id"])["horse_id"].count().values
+        
         X = today_race_X.drop(["race_id", "horse_id"], axis=1)
         
         model = pd.read_pickle('./dataset/model/model.pickle')
@@ -93,41 +95,41 @@ def predict_chances(request):
         ranknum = np.arange(1, 19)
         sorted_rank = ranknum[np.argsort(y_pred)[::-1]]
 
-        rank1 = sorted_rank[0]
+        rank1 = y_pred[0]
         rank1 = int(rank1)
-        rank2 = sorted_rank[1]
+        rank2 = y_pred[1]
         rank2 = int(rank2)
-        rank3 = sorted_rank[2]
+        rank3 = y_pred[2]
         rank3 = int(rank3)
-        rank4 = sorted_rank[3]
+        rank4 = y_pred[3]
         rank4 = int(rank4)
-        rank5 = sorted_rank[4]
+        rank5 = y_pred[4]
         rank5 = int(rank5)
-        rank6 = sorted_rank[5]
+        rank6 = y_pred[5]
         rank6 = int(rank6)
-        rank7 = sorted_rank[6]
+        rank7 = y_pred[6]
         rank7 = int(rank7)
-        rank8 = sorted_rank[7]
+        rank8 = y_pred[7]
         rank8 = int(rank8)
-        rank9 = sorted_rank[8]
+        rank9 = y_pred[8]
         rank9 = int(rank9)
-        rank10 = sorted_rank[9]
+        rank10 = y_pred[9]
         rank10 = int(rank10)
-        rank11 = sorted_rank[10]
+        rank11 = y_pred[10]
         rank11 = int(rank11)
-        rank12 = sorted_rank[11]
+        rank12 = y_pred[11]
         rank12 = int(rank12)
-        rank13 = sorted_rank[12]
+        rank13 = y_pred[12]
         rank13 = int(rank13)
-        rank14 = sorted_rank[13]
+        rank14 = y_pred[13]
         rank14 = int(rank14)
-        rank15 = sorted_rank[14]
+        rank15 = y_pred[14]
         rank15 = int(rank15)
-        rank16 = sorted_rank[15]
+        rank16 = y_pred[15]
         rank16 = int(rank16)
-        rank17 = sorted_rank[16]
+        rank17 = y_pred[16]
         rank17 = int(rank17)
-        rank18 = sorted_rank[17]
+        rank18 = y_pred[17]
         rank18 = int(rank18)
 
 
