@@ -23,7 +23,6 @@ import requests
 
 #保存先のディレクトリ
 dir = 'takamatsu'
-id = 202307020611
 
 def html():
     URL = set_url.race_database()
@@ -31,7 +30,7 @@ def html():
 
     #検索条件の記述
     race_name = "高松宮記念"
-    year = 2022
+    year = 2006
     month = 1
     end_year = 2022
     end_month = 12
@@ -112,7 +111,7 @@ def html():
             response.encoding = response.apparent_encoding
             html = response.text
             time.sleep(5)
-            with open(save_file_path, 'w') as file:
+            with open(save_file_path, 'w', encoding='cp932', errors='replace') as file:
                 file.write(html)
 
     return HTML_RACE_DIR
@@ -137,7 +136,7 @@ def get_race_html(race_id, html):
     race_list.append(race_details2[0]) # date
     race_list.append(race_details2[1]) # where_racecourse
 
-    result_rows = soup.find("table", class_="race_table_01 nk_tb_common").findAll('tr') # レース結果
+    result_rows = soup.find("table", class_="race_table_01 nk_tb_common").findAll('tr') 
     # 上位3着の情報
     race_list.append(len(result_rows)-1) # total_horse_number
     for i in range(1,4):
@@ -260,7 +259,7 @@ def get_race_html(race_id, html):
         response.encoding = response.apparent_encoding
         html = response.text
         time.sleep(5)
-        with open(save_file_path, 'w') as file:
+        with open(save_file_path, 'w', encoding='cp932', errors='replace') as file:
             file.write(html)
 
     return race_list, horse_list_list, HTML_HORSE_DIR
