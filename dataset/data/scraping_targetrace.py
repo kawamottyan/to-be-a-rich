@@ -7,6 +7,7 @@ import open_chrome
 import columns
 
 import pandas as pd
+import numpy as np
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select,WebDriverWait
@@ -28,15 +29,15 @@ def html():
     URL = set_url.horse_target()
     driver,wait = open_chrome.open_chrome(URL)
 
-    HTML_DIR = "html/"+dir+"/targetracepage/"
-    if not os.path.isdir(HTML_DIR):
-        os.makedirs(HTML_DIR)
+    HTML_RACE_DIR = "html/"+dir+"/targetracepage/"
+    if not os.path.isdir(HTML_RACE_DIR):
+        os.makedirs(HTML_RACE_DIR)
 
     url = driver.current_url
     race_id = url.split("=")[1].split("&")[0]
     # list = url.split("/")
     # race_id = list[-1]
-    save_file_path = HTML_DIR+race_id+'.html'
+    save_file_path = HTML_RACE_DIR + race_id + '.html'
 
     response = requests.get(url)
     response.encoding = response.apparent_encoding
@@ -47,14 +48,13 @@ def html():
 
     #馬の詳細ページの取得
     soup = BeautifulSoup(html, 'html.parser')
-    result_rows = soup.find("table", class_="race_table_01 nk_tb_common").findAll('tr')
-    
+    result_rows = soup.find("table", class_="Shutuba_Table").findAll('tr')
     horse_href_list=[]
-    for row in range(1, len(result_rows)):
+    for row in range(2, len(result_rows)):
         result_row=result_rows[row]
         result_data = result_row.findAll('td')[3]
-        horse_href_list.append("https://db.netkeiba.com"+result_data.find('a').get('href'))
-        
+        horse_href_list.append(result_data.find('a').get('href'))
+    print(horse_href_list)
 
     HTML_HORSE_DIR = "html/"+dir+"/targethorsepage/"
     if not os.path.isdir(HTML_HORSE_DIR):
@@ -62,8 +62,8 @@ def html():
 
     for url in horse_href_list:
         list = url.split("/")
-        horse_id = list[-2]
-        save_file_path = HTML_HORSE_DIR+horse_id+'.html'
+        horse_id = list[-1]
+        save_file_path = HTML_HORSE_DIR + horse_id + '.html'
         response = requests.get(url)
         response.encoding = response.apparent_encoding
         html = response.text
@@ -71,7 +71,7 @@ def html():
         with open(save_file_path, 'w', encoding='cp932', errors='replace') as file:
             file.write(html)
 
-    return HTML_DIR
+    return HTML_RACE_DIR, HTML_HORSE_DIR
 
 #HTMLデータからスクレイピングする関数を定義
 def get_race_html(race_id, html):
@@ -108,9 +108,6 @@ def get_race_html(race_id, html):
     #RaceData02.split("\n")[10]#->''
     #race_list.append(RaceData02.split("\n")[11])#->'本賞金:17000,6800,4300,2600,1700万円'
     #RaceData02.split("\n")[12]#->''
-
-
-
     
     #tableの情報を取得
     horse_tables = soup.findAll("table", class_="RaceTable01")
@@ -141,9 +138,7 @@ def get_race_html(race_id, html):
         horse_list.append(result_row[3].get_text())#馬の名前
         horse_list_list.append(horse_list)
 
-    return race_list, horse_list_list, HTML_HORSE_DIR
-
-
+    return race_list, horse_list_list
 
 def get_horse_html(horse_id, html):
     horse_list = [horse_id]
@@ -237,7 +232,7 @@ def get_horse_html(horse_id, html):
     return horse_list , horse_race_tmp_df
 
 
-def csv(HTML_DIR):
+def csv(HTML_RACE_DIR,HTML_HORSE_DIR):
     #csvの保存場所を設定
     CSV_DIR = "csv/"+dir+"/targetracepage/"
     if not os.path.isdir(CSV_DIR):
@@ -245,18 +240,17 @@ def csv(HTML_DIR):
     save_race_csv = CSV_DIR+"race"+".csv"
     horse_race_csv = CSV_DIR+"horse"+".csv"
 
-    #上記で定義した関数を使って、各要素をデータフレームに保存
-    
+    #上記で定義した関数を使って、各要素をデータフレームに保存    
     race_df = pd.DataFrame(columns=columns.targetrace_data_columns())
     horse_df = pd.DataFrame(columns=columns.targethorse_data_columns())
-    if os.path.isdir(HTML_DIR):
-        file_list = os.listdir(HTML_DIR)
+    if os.path.isdir(HTML_RACE_DIR):
+        file_list = os.listdir(HTML_RACE_DIR)
         for file_name in file_list:
-            with open(HTML_DIR+"/"+file_name, "r") as f:
+            with open(HTML_RACE_DIR+file_name, "r") as f:
                 html = f.read()
                 list = file_name.split(".")
                 race_id = list[-2]
-                race_list, horse_list_list, HTML_HORSE_DIR = get_race_html(race_id, html) 
+                race_list, horse_list_list = get_race_html(race_id, html) 
                 for horse_list in horse_list_list:
                     horse_se = pd.Series( horse_list, index=horse_df.columns)
                     horse_df = pd.concat([horse_df, horse_se.to_frame().T], ignore_index=True)
@@ -267,7 +261,7 @@ def csv(HTML_DIR):
     race_df.to_csv(save_race_csv, header=True, index=False)
     horse_df.to_csv(horse_race_csv, header=True, index=False)
 
-    CSV_DIR = "csv/"+dir+"/horsepage/"
+    CSV_DIR = "csv/"+dir+"/targethorsepage/"
     if not os.path.isdir(CSV_DIR):
         os.makedirs(CSV_DIR)
     horse_info_csv = CSV_DIR+"horse-info.csv"
@@ -290,13 +284,7 @@ def csv(HTML_DIR):
     horse_info_df.to_csv(horse_info_csv, header=True, index=False)
     horse_race_df.to_csv(horse_race_csv, header=True, index=False)
 
-
-
-
-
-
-
 if __name__ == '__main__':
-    HTML_DIR = html()
-    csv(HTML_DIR)
+    HTML_RACE_DIR,HTML_HORSE_DIR = html()
+    csv(HTML_RACE_DIR,HTML_HORSE_DIR)
     
