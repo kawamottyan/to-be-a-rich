@@ -5,6 +5,7 @@
 import set_url
 import open_chrome
 import columns
+import data_cleansing
 
 import pandas as pd
 import numpy as np
@@ -54,7 +55,6 @@ def html():
         result_row=result_rows[row]
         result_data = result_row.findAll('td')[3]
         horse_href_list.append(result_data.find('a').get('href'))
-    print(horse_href_list)
 
     HTML_HORSE_DIR = "html/"+dir+"/targethorsepage/"
     if not os.path.isdir(HTML_HORSE_DIR):
@@ -80,8 +80,12 @@ def get_race_html(race_id, html):
     soup = BeautifulSoup(html, 'html.parser')
 
     # race基本情報
+    title = soup.find('title').text
+    race_name, date = title.split(' | ')[0], title.split(' | ')[1]
+    race_list.append(race_name)
+    race_list.append(date)
     race_list.append(soup.find("span", class_="RaceNum").get_text())
-    race_list.append(soup.find("div", class_="RaceName").get_text())
+    #race_list.append(soup.find("div", class_="RaceName").get_text())
     RaceData01 = soup.find("div", class_="RaceData01").get_text()
     race_list.append(RaceData01.split("/")[0])
     race_list.append(RaceData01.split("/")[1])
@@ -237,8 +241,8 @@ def csv(HTML_RACE_DIR,HTML_HORSE_DIR):
     CSV_DIR = "csv/"+dir+"/targetracepage/"
     if not os.path.isdir(CSV_DIR):
         os.makedirs(CSV_DIR)
-    save_race_csv = CSV_DIR+"race"+".csv"
-    horse_race_csv = CSV_DIR+"horse"+".csv"
+    race_csv = CSV_DIR+"race"+".csv"
+    horse_csv = CSV_DIR+"horse"+".csv"
 
     #上記で定義した関数を使って、各要素をデータフレームに保存    
     race_df = pd.DataFrame(columns=columns.targetrace_data_columns())
@@ -258,8 +262,8 @@ def csv(HTML_RACE_DIR,HTML_HORSE_DIR):
                 race_df = pd.concat([race_df, race_se.to_frame().T], ignore_index=True)
 
     #dfをcsvに書き出し
-    race_df.to_csv(save_race_csv, header=True, index=False)
-    horse_df.to_csv(horse_race_csv, header=True, index=False)
+    race_df.to_csv(race_csv, header=True, index=False)
+    horse_df.to_csv(horse_csv, header=True, index=False)
 
     CSV_DIR = "csv/"+dir+"/targethorsepage/"
     if not os.path.isdir(CSV_DIR):
@@ -284,7 +288,50 @@ def csv(HTML_RACE_DIR,HTML_HORSE_DIR):
     horse_info_df.to_csv(horse_info_csv, header=True, index=False)
     horse_race_df.to_csv(horse_race_csv, header=True, index=False)
 
+    return race_csv, horse_csv, horse_info_csv, horse_race_csv
+
 if __name__ == '__main__':
     HTML_RACE_DIR,HTML_HORSE_DIR = html()
-    csv(HTML_RACE_DIR,HTML_HORSE_DIR)
+    race_csv, horse_csv, horse_info_csv, horse_race_csv = csv(HTML_RACE_DIR,HTML_HORSE_DIR)
     
+    #read_csv
+    race_df = pd.read_csv(race_csv)
+    horse_df = pd.read_csv(horse_csv)
+    horse_info_df = pd.read_csv(horse_info_csv)
+    horse_race_df = pd.read_csv(horse_race_csv)
+
+    #data_cleansing
+    race_df = data_cleansing.race_round(race_df)
+    race_df = data_cleansing.race_course(race_df)
+    race_df = data_cleansing.weather(race_df)
+    race_df = data_cleansing.ground_status(race_df)
+    # race_df = data_cleansing.time(race_df)
+    #race_df = data_cleansing.where_racecourse(race_df)
+    # race_df = data_cleansing.money(race_df)
+
+    # horse_df = data_cleansing.rank(horse_df)
+    horse_df = data_cleansing.sex_and_age(horse_df)
+    # horse_df = data_cleansing.goal_time(horse_df)
+    # horse_df = data_cleansing.last_time(horse_df)
+    # horse_df = data_cleansing.tame_time(horse_df)
+    # horse_df = data_cleansing.half_way_rank(horse_df)
+    # horse_df = data_cleansing.horse_weight(horse_df)
+    # horse_df = data_cleansing.goal_time_dif(horse_df)
+    # horse_df = data_cleansing.burden_weight_rate(horse_df)
+    # horse_df = data_cleansing.avg_velocity(horse_df, race_df)
+
+    horse_info_df = data_cleansing.production_area(horse_info_df)
+    horse_info_df = data_cleansing.auction_price(horse_info_df)
+    horse_info_df = data_cleansing.winnings(horse_info_df)
+    horse_info_df = data_cleansing.lifetime_record(horse_info_df)
+
+    horse_race_df = data_cleansing.horse_weight(horse_race_df)
+
+    MAIN_HORSE_DIR = "main/"+dir+"/racepage/"
+    if not os.path.isdir(MAIN_HORSE_DIR):
+        os.makedirs(MAIN_HORSE_DIR)
+    RACE_DIR = MAIN_HORSE_DIR+"targetrace.csv"
+    HORSE_DIR = MAIN_HORSE_DIR+"targethorse.csv"
+
+    race_df.to_csv(RACE_DIR, header=True, index=False)
+    horse_df.to_csv(HORSE_DIR, header=True, index=False)

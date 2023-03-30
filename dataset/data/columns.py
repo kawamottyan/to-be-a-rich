@@ -1,4 +1,4 @@
-#スクレイピングするカラムの設定
+'''スクレイピングするカラムの設定'''
 def race_data_columns():
     race_data_columns=[
         'race_id',
@@ -67,7 +67,7 @@ def targethorse_data_columns():
         'burden_weight',
         'rider_id',
         'tamer_id',
-        'owner_id'
+        # 'owner_id',
         'horse_weight',
         'odds',
         'popular',
@@ -79,8 +79,9 @@ def targethorse_data_columns():
 def targetrace_data_columns():
     race_data_columns=[
         'race_id',
-        'race_round',
         'race_title',
+        'date',
+        'race_round',
         'time',
         'race_course',
         'weather',
@@ -97,19 +98,19 @@ def horse_info_columns():
         'tame_id',
         'owner_id',
         'producer_id',
-        'production area',
-        'auction price',
+        'production_area',
+        'auction_price',
         'winnings',
-        'lifetime record',
-        'wined race title',
+        'lifetime_record',
+        'wined_race_title',
         'inbreeding-1',
         'inbreeding-2',
         'father',
-        'faths father',
-        'faths mother',
+        'faths_father',
+        'faths_mother',
         'mother',
-        'moths father',
-        'moths mother'
+        'moths_father',
+        'moths_mother'
     ]
     return horse_data_info_columns
 
@@ -127,7 +128,7 @@ def horse_race_columns():
                         "popular",
                         "rank",
                         "rider_id",
-                        "horse_wight",
+                        "burden_weight",
                         "distance",
                         "groud_status",
                         'goal_time',

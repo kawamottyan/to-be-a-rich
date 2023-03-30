@@ -1,4 +1,4 @@
-horse_id,bday,tame_id,owner_id,producer_id,production area,auction price,winnings,lifetime record,wined race title,inbreeding-1,inbreeding-2,father,faths father,faths mother,mother,moths father,moths mother
+horse_id,bday,tame_id,owner_id,producer_id,production_area,auction_price,winnings,lifetime_record,wined_race_title,inbreeding-1,inbreeding-2,father,faths_father,faths_mother,mother,moths_father,moths_mother
 2015101028,2015年3月3日,01027,865800,103341,日高町,"
 -
 ","
@@ -85,7 +85,7 @@ horse_id,bday,tame_id,owner_id,producer_id,production area,auction price,winning
 
 3億1,306万円 (中央)
 
-",15戦7勝 [7-0-0-8],202207050211,2019105233,2022104821,2011103916,2002100816,2004110007,2013106122,000a011996,2005102546
+",15戦7勝 [7-0-0-8],202205020711,2019105233,2022104821,2011103916,2002100816,2004110007,2013106122,000a011996,2005102546
 2018105204,2018年5月14日,01002,506800,owner.netkeiba.com,ノーザンファーム,安平町,"
 -
 ","
@@ -125,7 +125,7 @@ horse_id,bday,tame_id,owner_id,producer_id,production area,auction price,winning
 
 3億553万円 (中央)
 
-",12戦4勝 [4-3-3-2],202307011011,2015103145,2013103521,2011103916,2002100816,2004110007,000a011dfd,000a001a98,000a011d7e
+",12戦4勝 [4-3-3-2],202202010211,2015103145,2013103521,2011103916,2002100816,2004110007,000a011dfd,000a001a98,000a011d7e
 2019105126,2019年3月4日,00438,195031,373126,安平町,"1億1,550万円 (2020年 セレクトセール)
 ","
 
