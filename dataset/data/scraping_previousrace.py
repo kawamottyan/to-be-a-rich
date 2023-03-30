@@ -24,6 +24,7 @@ import requests
 
 #保存先のディレクトリ
 dir = 'osaka'
+race_id_list = []
 
 def html():
     URL = set_url.race_database()
@@ -31,7 +32,7 @@ def html():
 
     #検索条件の記述
     race_name = "大阪杯"
-    year = 2006
+    year = 2022
     month = 1
     end_year = 2022
     end_month = 12
@@ -114,7 +115,7 @@ def html():
             time.sleep(5)
             with open(save_file_path, 'w', encoding='cp932', errors='replace') as file:
                 file.write(html)
-
+            race_id_list.append(race_id)
     return HTML_RACE_DIR
 
 
@@ -460,7 +461,7 @@ if __name__ == '__main__':
     horse_race_df = data_cleansing.distance(horse_race_df)
     horse_race_df = data_cleansing.ground_type(horse_race_df)
     horse_race_df = data_cleansing.ground_status(horse_race_df)
-
+    horse_race_df = data_cleansing.delete_race(horse_race_df,race_id_list)
 ###
 
     MAIN_HORSE_DIR = "main/"+dir+"/"

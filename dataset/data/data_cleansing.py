@@ -343,6 +343,32 @@ def lifetime_record(horse_info_df):
 
 ##########horse_race_df##########
 #date
+def delete_race(horse_race_df,race_id_list):
+    horse_race_df.loc[horse_race_df['race_id'].isin(race_id_list), 'target_race_id'] = (
+        horse_race_df[horse_race_df['race_id'].isin(race_id_list)]
+        .groupby('horse_id')['date']
+        .transform('min')
+        )
+    horse_race_df['date'] = pd.to_datetime(horse_race_df['date'], format='%Y/%m/%d')
+    print(horse_race_df.info())
+    # horse_idでグループ化して、target_race_idとrace_idが同じものの中で最も古いdateを取得する
+    df = (
+        horse_race_df
+        .sort_values('date', ascending=True)
+        .groupby('horse_id')
+        .apply(lambda x: x.loc[x['target_race_id'] == x['race_id'], 'date'].iloc[0] if len(x.loc[x['target_race_id'] == x['race_id'], 'date']) > 0 else np.nan)
+        .reset_index()
+    )
+
+    # 新しいカラムとしてhorse_idとrace_dateを作成する
+    df.columns = ['horse_id', 'race_date']
+    df['race_date'] = pd.to_datetime(df['race_date'])
+
+    # 元のデータフレームにmergeする
+    horse_race_df = horse_race_df.merge(df, on='horse_id', how='left')
+    horse_race_df.drop(horse_race_df[horse_race_df['date'] >= horse_race_df['race_date']].index, inplace=True)
+    print(horse_race_df.info())
+    return horse_race_df
 
 #whereracecourse
 
