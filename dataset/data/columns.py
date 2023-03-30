@@ -1,4 +1,5 @@
 '''スクレイピングするカラムの設定'''
+
 def race_data_columns():
     race_data_columns=[
         'race_id',
@@ -116,7 +117,7 @@ def horse_info_columns():
 
 def horse_race_columns():
     horse_race_columns=["date",
-                        "whereracecourse",
+                        "where_racecourse",
                         "weather",
                         "race_round",
                         "race_title",
@@ -130,7 +131,7 @@ def horse_race_columns():
                         "rider_id",
                         "burden_weight",
                         "distance",
-                        "groud_status",
+                        "ground_status",
                         'goal_time',
                         'goal_time_dif',
                         'half_way_rank',

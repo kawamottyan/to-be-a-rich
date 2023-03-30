@@ -23,15 +23,15 @@ import time
 import requests
 
 #保存先のディレクトリ
-dir = 'takamatsu'
+dir = 'osaka'
 
 def html():
     URL = set_url.race_database()
     driver,wait = open_chrome.open_chrome(URL)
 
     #検索条件の記述
-    race_name = "高松宮記念"
-    year = 2022
+    race_name = "大阪杯"
+    year = 2006
     month = 1
     end_year = 2022
     end_month = 12
@@ -277,7 +277,7 @@ def get_horse_html(horse_id, html):
     horse_list.append(horse_table[2].find('a').get('href').split("/")[-2])
     try:
         horse_list.append(horse_table[3].find('a').get('href').split("/")[-2])
-    except AttributeError:
+    except:
         horse_list.append(None)
     horse_list.append(horse_table[4].get_text())
     horse_list.append(horse_table[5].get_text())
@@ -429,6 +429,8 @@ if __name__ == '__main__':
     #data_cleansing
     race_df = data_cleansing.race_round(race_df)
     race_df = data_cleansing.race_course(race_df)
+    race_df = data_cleansing.ground_type(race_df)
+    race_df = data_cleansing.is_left_right_straight(race_df)
     race_df = data_cleansing.weather(race_df)
     race_df = data_cleansing.ground_status(race_df)
     race_df = data_cleansing.time(race_df)
@@ -446,20 +448,32 @@ if __name__ == '__main__':
     horse_df = data_cleansing.burden_weight_rate(horse_df)
     horse_df = data_cleansing.avg_velocity(horse_df, race_df)
 
+    horse_info_df = data_cleansing.producer_id(horse_info_df)
     horse_info_df = data_cleansing.production_area(horse_info_df)
     horse_info_df = data_cleansing.auction_price(horse_info_df)
     horse_info_df = data_cleansing.winnings(horse_info_df)
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
 
     horse_race_df = data_cleansing.horse_weight(horse_race_df)
+    horse_race_df = data_cleansing.where_racecourse(horse_race_df)
+    horse_race_df = data_cleansing.weather(horse_race_df)
+    horse_race_df = data_cleansing.distance(horse_race_df)
+    horse_race_df = data_cleansing.ground_type(horse_race_df)
+    horse_race_df = data_cleansing.ground_status(horse_race_df)
 
-    MAIN_HORSE_DIR = "main/"+dir+"/racepage/"
+###
+
+    MAIN_HORSE_DIR = "main/"+dir+"/"
     if not os.path.isdir(MAIN_HORSE_DIR):
         os.makedirs(MAIN_HORSE_DIR)
     RACE_DIR = MAIN_HORSE_DIR+"race.csv"
     HORSE_DIR = MAIN_HORSE_DIR+"horse.csv"
+    HORSE_INFO_DIR = MAIN_HORSE_DIR+"horse_info_df.csv"
+    HORSE_RACE_DIR = MAIN_HORSE_DIR+"horse_race_df.csv"
 
     race_df.to_csv(RACE_DIR, header=True, index=False)
     horse_df.to_csv(HORSE_DIR, header=True, index=False)
+    horse_info_df.to_csv(HORSE_INFO_DIR, header=True, index=False)
+    horse_race_df.to_csv(HORSE_RACE_DIR, header=True, index=False)
 
-
+###

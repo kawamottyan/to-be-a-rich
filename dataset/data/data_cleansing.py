@@ -3,6 +3,7 @@
 import pandas as pd
 import numpy as np
 from statistics import mean
+from datetime import datetime
 
 # race_df = pd.read_csv("../data/csv/takamatsu/racepage/race.csv")
 # horse_df = pd.read_csv("../data/csv/takamatsu/racepage/horse.csv")
@@ -16,6 +17,9 @@ def race_round(race_df):
     return race_df
 
 #race_title
+def race_title(race_df):
+    race_df["race_title"] = race_df["race_title"].str.split().str[0]
+    return race_df
 
 #race_course
 def race_course(race_df):
@@ -46,50 +50,94 @@ def race_course(race_df):
     #オリジナルの削除
     race_df.drop(['race_course'], axis=1, inplace=True)
     return race_df
+#ground_type
+def ground_type(race_df):
+    race_df['ground_type'] = race_df['ground_type'].replace('.*(ダ).*', 0,regex=True)
+    race_df['ground_type'] = race_df['ground_type'].replace('.*(芝).*', 1,regex=True)
+    return race_df
+#is_left_right_straight
+def is_left_right_straight(race_df):
+    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(左).*', 0,regex=True)
+    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(右).*', 1,regex=True)
+    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(直線).*', 2,regex=True)
+    return race_df
 
 #weather
 def weather(race_df):
-    race_df['weather'] = race_df['weather'].str.strip('天候 :')
-    weather_rain = race_df["weather"].str.extract('(小雨|雨)', expand=True)
-    weather_snow = race_df["weather"].str.extract('(小雪|雪)', expand=True)
-    weather_rain.columns ={"weather_rain"}
-    weather_snow.columns ={"weather_snow"}
-    race_df = pd.concat([race_df, weather_rain], axis=1)
-    race_df = pd.concat([race_df, weather_snow], axis=1)
+    race_df['weather'] = race_df['weather'].astype(str).str.strip('天候 :')
+    race_df['weather'] = race_df['weather'].replace('.*(晴).*', 0,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(曇).*', 1,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(小雨).*', 2,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(小雪).*', 3,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(雨).*', 4,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(雪).*', 5,regex=True)
+    # weather_rain.columns ={"weather_rain"}
+    # weather_snow.columns ={"weather_snow"}
+    # race_df = pd.concat([race_df, weather_rain], axis=1)
+    # race_df = pd.concat([race_df, weather_snow], axis=1)
 
-    race_df.fillna(value={'weather_rain': 0}, inplace=True)
-    race_df['weather_rain'] = race_df['weather_rain'].replace('小雨', 1)
-    race_df['weather_rain'] = race_df['weather_rain'].replace('雨', 2)
-    race_df.fillna(value={'weather_snow': 0}, inplace=True)
-    race_df['weather_snow'] = race_df['weather_snow'].replace('小雪', 1)
-    race_df['weather_snow'] = race_df['weather_snow'].replace('雪', 2)
+    # race_df.fillna(value={'weather_rain': 0}, inplace=True)
+    # race_df['weather_rain'] = race_df['weather_rain'].replace('小雨', 1)
+    # race_df['weather_rain'] = race_df['weather_rain'].replace('雨', 2)
+    # race_df.fillna(value={'weather_snow': 0}, inplace=True)
+    # race_df['weather_snow'] = race_df['weather_snow'].replace('小雪', 1)
+    # race_df['weather_snow'] = race_df['weather_snow'].replace('雪', 2)
     return race_df
 
 #ground_status
 def ground_status(race_df):
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 4,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(重).*', 3,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 5,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(重).*', 4,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍).*', 3,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(不).*', 3,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(不良).*', 2,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(良).*', 1,regex=True)
     return race_df
 
-
 #time
 def time(race_df):
-    race_df["time"] = race_df["time"].str.replace('発走 : (\d\d):(\d\d)(.|\n)*', r'\1時\2分')
-    race_df["datetime"] = race_df["date"] + race_df["time"]
-    race_df["datetime"] = pd.to_datetime(race_df['datetime'], format='%Y年%m月%d日%H時%M分')
+    race_df["time"] = race_df["time"].str.extract(r"(\d{1,2}:\d{2})")
+    race_df["date"] = pd.to_datetime(race_df["date"], format='%Y年%m月%d日')
+    race_df["datetime"] = race_df["date"].dt.strftime('%Y年%m月%d日') + race_df["time"]
+    race_df["datetime"] = pd.to_datetime(race_df["datetime"], format='%Y年%m月%d日%H:%M')
+    # race_df["datetime"] = race_df["date"] + race_df["time"]
+    # race_df["datetime"] = pd.to_datetime(race_df['datetime'], format='%Y年%m月%d日%H時%M分')
+    race_df = race_df.drop(['time','date'],axis=1)
     return race_df
 
 #date
+def date(race_df):
+    race_df["date"] = race_df["date"].str.split().str[0]
+    return race_df
 
 #where_racecourse
 def where_racecourse(race_df):
-    race_df["where_racecourse"] = race_df["where_racecourse"].str.replace('\d*回(..)\d*日目', r'\1')
+    try:
+        race_df["where_racecourse"] = race_df["where_racecourse"].str.replace('\d*回(..)\d*日目', r'\1')
+    except:
+        pass
+    try:
+        race_df['where_racecourse'] = race_df['where_racecourse'].str.replace('\d+', '')
+    except:
+        pass
+    #エンコーディング
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(札幌).*', 1,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(函館).*', 2,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(福島).*', 3,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(新潟).*', 4,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(東京).*', 5,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(中山).*', 6,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(中京).*', 7,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(京都).*', 8,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(阪神).*', 9,regex=True)
+    race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(小倉).*', 10,regex=True)
+    race_df["where_racecourse"] = race_df["where_racecourse"].astype(str).apply(lambda x: 0 if not x.isdigit() else x)
     return race_df
 
 #total_horse_number
+def total_horse_number(race_df):
+    race_df['total_horse_number'] = race_df['total_horse_number'].str.extract('(\d+)').astype(int)
+    return race_df
 
 #frame_number_first
 
@@ -158,6 +206,7 @@ def sex_and_age(horse_df):
     horse_df["sex_and_age"]  = horse_df["sex_and_age"].replace('.*(セ).*', 2,regex=True)
     #sexを作成
     horse_df["sex"] = horse_df["sex_and_age"]
+    horse_df= horse_df.drop('sex_and_age', axis=1)
     return horse_df
 
 #burden_weight
@@ -204,13 +253,16 @@ def horse_weight(horse_df):
     horse_df = pd.concat([horse_df, horse_weight_dif], axis=1)
     horse_df['horse_weight'] = horse_df['horse_weight'].replace('\(([-|+]?\d*)\)', '', regex=True)
     horse_df['horse_weight'] = horse_df['horse_weight'].replace('計不', np.nan)
-    horse_df['horse_weight'] = horse_df['horse_weight'].astype(int)
-    horse_df['horse_weight_dif'] = horse_df['horse_weight_dif'].astype(int)
-    # 計不 の horse_idを探し、馬ごとの平均値で穴埋め
-    no_records = horse_df[horse_df['horse_weight'].isnull()]['horse_id']
-    for no_record_id in no_records:
-        horse_df.loc[(horse_df['horse_id'] == no_record_id)&(horse_df['horse_weight'].isnull()), 'horse_weight'] = horse_df[horse_df['horse_id'] == no_record_id]['horse_weight'].mean() 
-        horse_df.loc[(horse_df['horse_id'] == no_record_id)&(horse_df['horse_weight_dif'].isnull()), 'horse_weight_dif'] = 0 
+    try:
+        horse_df['horse_weight'] = horse_df['horse_weight'].astype(int)
+        horse_df['horse_weight_dif'] = horse_df['horse_weight_dif'].astype(int)
+        # 計不 の horse_idを探し、馬ごとの平均値で穴埋め
+        no_records = horse_df[horse_df['horse_weight'].isnull()]['horse_id']
+        for no_record_id in no_records:
+            horse_df.loc[(horse_df['horse_id'] == no_record_id)&(horse_df['horse_weight'].isnull()), 'horse_weight'] = horse_df[horse_df['horse_id'] == no_record_id]['horse_weight'].mean() 
+            horse_df.loc[(horse_df['horse_id'] == no_record_id)&(horse_df['horse_weight_dif'].isnull()), 'horse_weight_dif'] = 0 
+    except:
+        pass
     return horse_df
 
 #goal_time_dif
@@ -220,6 +272,8 @@ def goal_time_dif(horse_df):
 
 #burden_weight_rate
 def burden_weight_rate(horse_df):
+    horse_df['horse_weight'] = horse_df['horse_weight'].astype(int)
+    horse_df['burden_weight'] = horse_df['burden_weight'].astype(int)
     horse_df['burden_weight_rate'] = horse_df['burden_weight']/horse_df['horse_weight']
     return horse_df
 
@@ -234,7 +288,6 @@ def avg_velocity(horse_df,race_df):
     horse_df.drop(['distance'], axis=1, inplace=True)
     return horse_df
 
-
 ##########horse_info_df##########
 #horse_id
 
@@ -245,6 +298,10 @@ def avg_velocity(horse_df,race_df):
 #owner_id
 
 #producer_id
+def producer_id(horse_info_df):
+    horse_info_df.loc[horse_info_df['producer_id'] == 'owner.netkeiba.com', 'producer_id'] = pd.NA
+    #horse_info_df['producer_id'] = horse_info_df['producer_id'].apply(lambda x: np.nan if 'owner.netkeiba.com' in str(x) else x)
+    return horse_info_df
 
 #production area
 def production_area(horse_info_df):
@@ -314,6 +371,11 @@ def lifetime_record(horse_info_df):
 #burden_weight
 
 #distance
+def distance(horse_race_df):
+    horse_race_df['distance'] = horse_race_df['distance'].astype(str)  # 文字列に変換
+    horse_race_df['ground_type'] = horse_race_df['distance'].astype(str).str.extract('(芝|ダ)').astype(str)
+    horse_race_df['distance'] = horse_race_df['distance'].str.extract('(\d+)').astype(int)   
+    return horse_race_df
 
 #groud_status
 
@@ -326,20 +388,7 @@ def lifetime_record(horse_info_df):
 #pace,last_time
 
 #horse_weight
-def horse_weight(horse_race_df):
-    horse_weight_dif = horse_race_df["horse_weight"].str.extract('\(([-|+]?\d*)\)', expand=True)
-    horse_weight_dif.columns ={"horse_weight_dif"}
-    horse_race_df = pd.concat([horse_race_df, horse_weight_dif], axis=1)
-    horse_race_df['horse_weight'] = horse_race_df['horse_weight'].replace('\(([-|+]?\d*)\)', '', regex=True)
-    horse_race_df['horse_weight'] = horse_race_df['horse_weight'].replace('計不', np.nan)
-    horse_race_df['horse_weight'] = horse_race_df['horse_weight'].astype(float)
-    horse_race_df['horse_weight_dif'] = horse_race_df['horse_weight_dif'].astype(float)
-    # 計不 の horse_idを探し、馬ごとの平均値で穴埋め
-    no_records = horse_race_df[horse_race_df['horse_weight'].isnull()]['horse_id']
-    for no_record_id in no_records:
-        horse_race_df.loc[(horse_race_df['horse_id'] == no_record_id)&(horse_race_df['horse_weight'].isnull()), 'horse_weight'] = horse_race_df[horse_race_df['horse_id'] == no_record_id]['horse_weight'].mean() 
-        horse_race_df.loc[(horse_race_df['horse_id'] == no_record_id)&(horse_race_df['horse_weight_dif'].isnull()), 'horse_weight_dif'] = 0 
-    return horse_race_df
+#上にある
 
 #runner-up-horse-id
 

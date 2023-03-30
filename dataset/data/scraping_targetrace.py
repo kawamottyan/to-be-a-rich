@@ -1,7 +1,6 @@
 '''
 今週のレース情報からレース結果とレース時の馬の情報を取得するスクレイピングコード
 '''
-
 import set_url
 import open_chrome
 import columns
@@ -23,8 +22,7 @@ import time
 import requests
 
 #保存先のディレクトリ
-dir = 'takamatsu'
-id = 202307020611
+dir = 'osaka'
 
 def html():
     URL = set_url.horse_target()
@@ -91,11 +89,11 @@ def get_race_html(race_id, html):
     race_list.append(RaceData01.split("/")[1])
     try:
         race_list.append(RaceData01.split("/")[2])
-    except AttributeError:
+    except:
         race_list.append(None)
     try:
         race_list.append(RaceData01.split("/")[3])
-    except AttributeError:
+    except:
         race_list.append(None)
         
     RaceData02 = soup.find("div", class_="RaceData02").get_text() 
@@ -125,19 +123,25 @@ def get_race_html(race_id, html):
         horse_list.append(result_row[3].find('a').get('href').split("/")[-1])#馬ID
         horse_list.append(result_row[4].get_text())#性別年齢
         horse_list.append(result_row[5].get_text())#斤量
-        horse_list.append(result_row[6].find('a').get('href').split("/")[-2])#騎手
-        horse_list.append(result_row[7].find('a').get('href').split("/")[-2])#厩舎
+        try:
+            horse_list.append(result_row[6].find('a').get('href').split("/")[-2])#騎手
+        except:
+            horse_list.append(None) 
+        try:
+            horse_list.append(result_row[7].find('a').get('href').split("/")[-2])#厩舎
+        except:
+            horse_list.append(None) 
         try:
             horse_list.append(result_row[8].get_text())#馬体重
-        except AttributeError:
+        except:
             horse_list.append(None) 
         try:
             horse_list.append(result_row[9].get_text())#オッズ
-        except AttributeError:
+        except:
             horse_list.append(None)
         try:
             horse_list.append(result_row[10].get_text())#人気
-        except AttributeError:
+        except:
             horse_list.append(None)
         horse_list.append(result_row[3].get_text())#馬の名前
         horse_list_list.append(horse_list)
@@ -156,7 +160,7 @@ def get_horse_html(horse_id, html):
     horse_list.append(horse_table[2].find('a').get('href').split("/")[-2])
     try:
         horse_list.append(horse_table[3].find('a').get('href').split("/")[-2])
-    except AttributeError:
+    except:
         horse_list.append(None)
     horse_list.append(horse_table[4].get_text())
     horse_list.append(horse_table[5].get_text())
@@ -212,7 +216,7 @@ def get_horse_html(horse_id, html):
         horse_race_list.append(horse_tds[11].get_text())
         try:
             horse_race_list.append(horse_tds[12].find('a').get('href').split("/")[-2])
-        except AttributeError:
+        except:
             horse_race_list.append(None)
         horse_race_list.append(horse_tds[13].get_text())
         horse_race_list.append(horse_tds[14].get_text())
@@ -225,14 +229,13 @@ def get_horse_html(horse_id, html):
         horse_race_list.append(horse_tds[23].get_text())
         try:
             horse_race_list.append(horse_tds[26].find('a').get('href').split("/")[-2])
-        except AttributeError:
+        except:
             horse_race_list.append(None)
         horse_race_list.append(horse_tds[27].get_text())
         horse_ra_se = pd.Series(horse_race_list, index=columns.horse_race_columns(),dtype='object')###
         horse_race_tmp_df = pd.concat([horse_race_tmp_df, horse_ra_se.to_frame().T], ignore_index=True)
 #     horse_race_tmp_df = pd.DataFrame(horse_race_list, columns=horse_race_columns)
-    horse_race_tmp_df.loc[:, 'horse_id'] = horse_id
-    
+    horse_race_tmp_df.loc[:, 'horse_id'] = horse_id    
     return horse_list , horse_race_tmp_df
 
 
@@ -302,11 +305,16 @@ if __name__ == '__main__':
 
     #data_cleansing
     race_df = data_cleansing.race_round(race_df)
+    race_df = data_cleansing.race_title(race_df)
     race_df = data_cleansing.race_course(race_df)
+    race_df = data_cleansing.ground_type(race_df)
+    race_df = data_cleansing.is_left_right_straight(race_df)
     race_df = data_cleansing.weather(race_df)
     race_df = data_cleansing.ground_status(race_df)
-    # race_df = data_cleansing.time(race_df)
-    #race_df = data_cleansing.where_racecourse(race_df)
+    race_df = data_cleansing.date(race_df)
+    race_df = data_cleansing.time(race_df) 
+    race_df = data_cleansing.where_racecourse(race_df)
+    race_df = data_cleansing.total_horse_number(race_df)
     # race_df = data_cleansing.money(race_df)
 
     # horse_df = data_cleansing.rank(horse_df)
@@ -315,23 +323,42 @@ if __name__ == '__main__':
     # horse_df = data_cleansing.last_time(horse_df)
     # horse_df = data_cleansing.tame_time(horse_df)
     # horse_df = data_cleansing.half_way_rank(horse_df)
-    # horse_df = data_cleansing.horse_weight(horse_df)
+    horse_df = data_cleansing.horse_weight(horse_df)
     # horse_df = data_cleansing.goal_time_dif(horse_df)
-    # horse_df = data_cleansing.burden_weight_rate(horse_df)
+    try:
+        horse_df = data_cleansing.burden_weight_rate(horse_df)
+    except:
+        pass
     # horse_df = data_cleansing.avg_velocity(horse_df, race_df)
 
+
+    horse_info_df = data_cleansing.producer_id(horse_info_df)
     horse_info_df = data_cleansing.production_area(horse_info_df)
     horse_info_df = data_cleansing.auction_price(horse_info_df)
     horse_info_df = data_cleansing.winnings(horse_info_df)
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
 
     horse_race_df = data_cleansing.horse_weight(horse_race_df)
+    horse_race_df = data_cleansing.where_racecourse(horse_race_df)
+    horse_race_df = data_cleansing.weather(horse_race_df)
+    horse_race_df = data_cleansing.distance(horse_race_df)
+    horse_race_df = data_cleansing.ground_type(horse_race_df)
+    horse_race_df = data_cleansing.ground_status(horse_race_df)
 
-    MAIN_HORSE_DIR = "main/"+dir+"/racepage/"
+####
+
+    MAIN_HORSE_DIR = "main/"+dir+"/"
     if not os.path.isdir(MAIN_HORSE_DIR):
         os.makedirs(MAIN_HORSE_DIR)
+
     RACE_DIR = MAIN_HORSE_DIR+"targetrace.csv"
     HORSE_DIR = MAIN_HORSE_DIR+"targethorse.csv"
+    HORSE_INFO_DIR = MAIN_HORSE_DIR+"targethorse_info_df.csv"
+    HORSE_RACE_DIR = MAIN_HORSE_DIR+"targethorse_race_df.csv"
 
     race_df.to_csv(RACE_DIR, header=True, index=False)
     horse_df.to_csv(HORSE_DIR, header=True, index=False)
+    horse_info_df.to_csv(HORSE_INFO_DIR, header=True, index=False)
+    horse_race_df.to_csv(HORSE_RACE_DIR, header=True, index=False)
+
+####
