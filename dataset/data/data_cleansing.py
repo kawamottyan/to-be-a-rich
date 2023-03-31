@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from statistics import mean
 from datetime import datetime
+import re
 
 # race_df = pd.read_csv("../data/csv/takamatsu/racepage/race.csv")
 # horse_df = pd.read_csv("../data/csv/takamatsu/racepage/horse.csv")
@@ -19,6 +20,11 @@ def race_round(race_df):
 #race_title
 def race_title(race_df):
     race_df["race_title"] = race_df["race_title"].str.split().str[0]
+    race_df['race_rank'] = race_df['race_title'].apply(lambda x: re.search(r'\((.*?)\)', x).group(1) if '(' in x else None)
+    race_df['race_rank'] = race_df['race_rank'].replace('.*G1.*', 3,regex=True)
+    race_df['race_rank'] = race_df['race_rank'].replace('.*G2.*', 2,regex=True)
+    race_df['race_rank'] = race_df['race_rank'].replace('.*G3.*', 1,regex=True)
+    race_df['race_rank'] = race_df['race_rank'].astype(str).str.extract('(\d+)').fillna(0).astype(int)
     return race_df
 
 #race_course
@@ -102,7 +108,7 @@ def time(race_df):
     race_df["datetime"] = pd.to_datetime(race_df["datetime"], format='%Y年%m月%d日%H:%M')
     # race_df["datetime"] = race_df["date"] + race_df["time"]
     # race_df["datetime"] = pd.to_datetime(race_df['datetime'], format='%Y年%m月%d日%H時%M分')
-    race_df = race_df.drop(['time','date'],axis=1)
+    race_df = race_df.drop(['time'],axis=1)
     return race_df
 
 #date
@@ -113,11 +119,11 @@ def date(race_df):
 #where_racecourse
 def where_racecourse(race_df):
     try:
-        race_df["where_racecourse"] = race_df["where_racecourse"].str.replace('\d*回(..)\d*日目', r'\1')
+        race_df["where_racecourse"] = race_df["where_racecourse"].str.replace('\d*回(..)\d*日目', r'\1',regex=True)
     except:
         pass
     try:
-        race_df['where_racecourse'] = race_df['where_racecourse'].str.replace('\d+', '')
+        race_df['where_racecourse'] = race_df['where_racecourse'].str.replace('\d+', '',regex=True)
     except:
         pass
     #エンコーディング
@@ -229,6 +235,16 @@ def last_time(horse_df):
     horse_df["last_time"] = horse_df["last_time"].apply(lambda x: int((x // 100) * 60 + (x % 100) + 0.5))
     return horse_df
 
+#odds
+def odds(horse_df):
+    horse_df['odds'] = horse_df['odds'].str.replace('\D', '', regex=True)
+    return horse_df
+
+#popular
+def popular(horse_df):
+    horse_df['popular'] = horse_df['popular'].str.replace('\D', '', regex=True)
+    return horse_df
+
 #time_value
 
 #tame_time
@@ -248,6 +264,7 @@ def half_way_rank(horse_df):
 
 #horse_weight
 def horse_weight(horse_df):
+    horse_df['horse_weight'] = horse_df['horse_weight'].apply(lambda x: x.replace('\n', ''))
     horse_weight_dif = horse_df["horse_weight"].str.extract('\(([-|+]?\d*)\)', expand=True)
     horse_weight_dif.columns ={"horse_weight_dif"}
     horse_df = pd.concat([horse_df, horse_weight_dif], axis=1)
@@ -288,6 +305,11 @@ def avg_velocity(horse_df,race_df):
     horse_df.drop(['distance'], axis=1, inplace=True)
     return horse_df
 
+#horse_name
+def horse_name(horse_df):
+    horse_df['horse_name'] = horse_df['horse_name'].apply(lambda x: re.sub(r'[^a-zA-Zぁ-んァ-ン一-龥ー]', '', x))
+    return horse_df
+
 ##########horse_info_df##########
 #horse_id
 
@@ -300,7 +322,6 @@ def avg_velocity(horse_df,race_df):
 #producer_id
 def producer_id(horse_info_df):
     horse_info_df.loc[horse_info_df['producer_id'] == 'owner.netkeiba.com', 'producer_id'] = pd.NA
-    #horse_info_df['producer_id'] = horse_info_df['producer_id'].apply(lambda x: np.nan if 'owner.netkeiba.com' in str(x) else x)
     return horse_info_df
 
 #production area
@@ -311,11 +332,15 @@ def production_area(horse_info_df):
 #auction price
 def auction_price(horse_info_df):
     horse_info_df['auction_price'] = horse_info_df['auction_price'].apply(lambda x: x.replace('\n', ''))
+    # horse_info_df["auction_price"] = horse_info_df["auction_price"].str.extract('(\d+([,.]\d+)*)\s*(億|\d+万円)?', expand=True)
+    # horse_info_df["auction_price"] = horse_info_df["auction_price"].fillna(0)
     return horse_info_df
 
 #winnings
 def winnings(horse_info_df):
     horse_info_df['winnings'] = horse_info_df['winnings'].apply(lambda x: x.replace('\n', ''))
+    # horse_info_df["winnings"] = horse_info_df["winnings"].str.extract('(\d+([,.]\d+)*)\s*(億|\d+万円)?', expand=True)
+    # horse_info_df["winnings"] = horse_info_df["winnings"].fillna(0)
     return horse_info_df
 
 #lifetime record
@@ -343,31 +368,17 @@ def lifetime_record(horse_info_df):
 
 ##########horse_race_df##########
 #date
-def delete_race(horse_race_df,race_id_list):
-    horse_race_df.loc[horse_race_df['race_id'].isin(race_id_list), 'target_race_id'] = (
-        horse_race_df[horse_race_df['race_id'].isin(race_id_list)]
-        .groupby('horse_id')['date']
-        .transform('min')
-        )
-    horse_race_df['date'] = pd.to_datetime(horse_race_df['date'], format='%Y/%m/%d')
-    print(horse_race_df.info())
-    # horse_idでグループ化して、target_race_idとrace_idが同じものの中で最も古いdateを取得する
-    df = (
-        horse_race_df
-        .sort_values('date', ascending=True)
-        .groupby('horse_id')
-        .apply(lambda x: x.loc[x['target_race_id'] == x['race_id'], 'date'].iloc[0] if len(x.loc[x['target_race_id'] == x['race_id'], 'date']) > 0 else np.nan)
-        .reset_index()
-    )
+def delete_race(horse_race_df,race_date_dict):
+    horse_race_df['race_date'] = None
+    # レースIDごとに日付を探して、'race_date'カラムに代入する
+    for i, row in horse_race_df.iterrows():
+        race_id = row['target_race_id']
+        race_date = race_date_dict.get(str(race_id))
+        horse_race_df.at[i, 'race_date'] = race_date
 
-    # 新しいカラムとしてhorse_idとrace_dateを作成する
-    df.columns = ['horse_id', 'race_date']
-    df['race_date'] = pd.to_datetime(df['race_date'])
+    horse_race_df["race_date"] = pd.to_datetime(horse_race_df["race_date"], format='%Y年%m月%d日')
 
-    # 元のデータフレームにmergeする
-    horse_race_df = horse_race_df.merge(df, on='horse_id', how='left')
     horse_race_df.drop(horse_race_df[horse_race_df['date'] >= horse_race_df['race_date']].index, inplace=True)
-    print(horse_race_df.info())
     return horse_race_df
 
 #whereracecourse
@@ -419,5 +430,9 @@ def distance(horse_race_df):
 #runner-up-horse-id
 
 #prize
+def prize(horse_race_df):
+    # horse_race_df["prize"] = horse_race_df["prize"].str.extract('(\d{1,3}(,\d{3})*(\.\d{1,2})?)', expand=True)
+    # horse_race_df["prize"] = horse_race_df["prize"].fillna(0)
+    return horse_race_df
 
 #horse_id

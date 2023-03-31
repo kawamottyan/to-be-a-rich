@@ -6,6 +6,7 @@ import set_url
 import open_chrome
 import columns
 import data_cleansing
+import upload_cloudstorage
 
 import pandas as pd
 import numpy as np
@@ -21,10 +22,11 @@ from bs4 import BeautifulSoup
 import os
 import time
 import requests
+from google.cloud import storage
 
 #保存先のディレクトリ
 dir = 'osaka'
-race_id_list = []
+race_date_dict = {}
 
 def html():
     URL = set_url.race_database()
@@ -32,7 +34,7 @@ def html():
 
     #検索条件の記述
     race_name = "大阪杯"
-    year = 2022
+    year = 2006
     month = 1
     end_year = 2022
     end_month = 12
@@ -115,9 +117,7 @@ def html():
             time.sleep(5)
             with open(save_file_path, 'w', encoding='cp932', errors='replace') as file:
                 file.write(html)
-            race_id_list.append(race_id)
     return HTML_RACE_DIR
-
 
 #HTMLデータからスクレイピングする関数を定義
 def get_race_html(race_id, html):
@@ -138,6 +138,8 @@ def get_race_html(race_id, html):
     race_list.append(race_details2[0]) # date
     race_list.append(race_details2[1]) # where_racecourse
 
+    race_date_dict[race_id] = race_details2[0]
+
     result_rows = soup.find("table", class_="race_table_01 nk_tb_common").findAll('tr') 
     # 上位3着の情報
     race_list.append(len(result_rows)-1) # total_horse_number
@@ -145,7 +147,6 @@ def get_race_html(race_id, html):
         row = result_rows[i].findAll('td')
         race_list.append(row[1].get_text()) # frame_number_first or second or third
         race_list.append(row[2].get_text()) # horse_number_first or second or third
-
 
     # 払い戻し(単勝・複勝・三連複・3連単)
     pay_back_tables = soup.findAll("table", class_="pay_table_01")
@@ -173,8 +174,6 @@ def get_race_html(race_id, html):
         race_list.append(pay_back1[3].find("td", class_="txt_r").get_text())
     except IndexError:
         race_list.append("0")
-
-
 
     pay_back2 = pay_back_tables[1].findAll('tr') # 払い戻し2(三連複・3連単)
 
@@ -246,8 +245,7 @@ def get_race_html(race_id, html):
     for row in range(1, len(result_rows)):
         result_row=result_rows[row]
         result_data = result_row.findAll('td')[3]
-        horse_href_list.append("https://db.netkeiba.com"+result_data.find('a').get('href'))
-        
+        horse_href_list.append("https://db.netkeiba.com"+result_data.find('a').get('href'))        
 
     HTML_HORSE_DIR = "html/"+dir+"/horsepage/"
     if not os.path.isdir(HTML_HORSE_DIR):
@@ -256,7 +254,7 @@ def get_race_html(race_id, html):
     for url in horse_href_list:
         list = url.split("/")
         horse_id = list[-2]
-        save_file_path = HTML_HORSE_DIR+horse_id+'.html'
+        save_file_path = HTML_HORSE_DIR+"-"+race_id+"-"+horse_id+"-"+'.html'
         response = requests.get(url)
         response.encoding = response.apparent_encoding
         html = response.text
@@ -266,7 +264,7 @@ def get_race_html(race_id, html):
 
     return race_list, horse_list_list, HTML_HORSE_DIR
 
-def get_horse_html(horse_id, html):
+def get_horse_html(horse_id, race_id, html):
     horse_list = [horse_id]
     horse_race_list = []
     soup = BeautifulSoup(html, 'html.parser')
@@ -317,7 +315,7 @@ def get_horse_html(horse_id, html):
         if index == 0:
             continue
         horse_race_list = []
-        horse_ra_se = pd.Series()
+        horse_ra_se = pd.Series(dtype='str')
 
         horse_tds = horse_tr.findAll("td")
         horse_race_list.append(horse_tds[0].get_text())
@@ -350,15 +348,13 @@ def get_horse_html(horse_id, html):
         except AttributeError:
             horse_race_list.append(None)
         horse_race_list.append(horse_tds[27].get_text())
-        horse_ra_se = pd.Series(horse_race_list, index=columns.horse_race_columns(),dtype='object')###
+        horse_ra_se = pd.Series(horse_race_list, index=columns.horse_race_columns(),dtype='str')###
         horse_race_tmp_df = pd.concat([horse_race_tmp_df, horse_ra_se.to_frame().T], ignore_index=True)
 #     horse_race_tmp_df = pd.DataFrame(horse_race_list, columns=horse_race_columns)
     horse_race_tmp_df.loc[:, 'horse_id'] = horse_id
+    horse_race_tmp_df.loc[:, 'target_race_id'] = race_id
     
     return horse_list , horse_race_tmp_df
-
-
-
 
 def csv(HTML_RACE_DIR):
     #csvの保存場所を設定
@@ -405,9 +401,10 @@ def csv(HTML_RACE_DIR):
         for file_name in file_list:
             with open(HTML_HORSE_DIR+file_name, "r") as f:
                 html = f.read()
-                list = file_name.split(".")
+                list = file_name.split("-")
                 horse_id = list[-2]
-                horse_list , horse_race_tmp_df = get_horse_html(horse_id, html) 
+                race_id = list[-3]
+                horse_list , horse_race_tmp_df = get_horse_html(horse_id, race_id, html) 
                 horse_se = pd.Series(horse_list, index=horse_info_df.columns)
                 horse_info_df = pd.concat([horse_info_df, horse_se.to_frame().T], ignore_index=True)
                 horse_race_df = pd.concat([horse_race_df, horse_race_tmp_df], axis=0, ignore_index=True)
@@ -416,6 +413,7 @@ def csv(HTML_RACE_DIR):
     horse_race_df.to_csv(horse_race_csv, header=True, index=False)
 
     return race_csv, horse_csv, horse_info_csv, horse_race_csv
+
 
 if __name__ == '__main__':
     HTML_RACE_DIR = html()
@@ -455,26 +453,51 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.winnings(horse_info_df)
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
 
+    horse_race_df = data_cleansing.race_title(horse_race_df)
     horse_race_df = data_cleansing.horse_weight(horse_race_df)
     horse_race_df = data_cleansing.where_racecourse(horse_race_df)
     horse_race_df = data_cleansing.weather(horse_race_df)
     horse_race_df = data_cleansing.distance(horse_race_df)
     horse_race_df = data_cleansing.ground_type(horse_race_df)
     horse_race_df = data_cleansing.ground_status(horse_race_df)
-    horse_race_df = data_cleansing.delete_race(horse_race_df,race_id_list)
+    horse_race_df = data_cleansing.delete_race(horse_race_df,race_date_dict)
+
 ###
 
-    MAIN_HORSE_DIR = "main/"+dir+"/"
-    if not os.path.isdir(MAIN_HORSE_DIR):
-        os.makedirs(MAIN_HORSE_DIR)
-    RACE_DIR = MAIN_HORSE_DIR+"race.csv"
-    HORSE_DIR = MAIN_HORSE_DIR+"horse.csv"
-    HORSE_INFO_DIR = MAIN_HORSE_DIR+"horse_info_df.csv"
-    HORSE_RACE_DIR = MAIN_HORSE_DIR+"horse_race_df.csv"
+    bucket_name = dir + "_csv_upload_bucket"
 
+    # バケットが存在しない場合は新しいバケットを作成する
+    storage_client = storage.Client()
+    if not storage_client.lookup_bucket(bucket_name):
+        upload_cloudstorage.create_bucket(bucket_name)
+    
+    MAIN_DIR = "main/"+dir+"/"
+    if not os.path.isdir(MAIN_DIR):
+        os.makedirs(MAIN_DIR)
+
+    RACE_DIR = MAIN_DIR+"race.csv"
     race_df.to_csv(RACE_DIR, header=True, index=False)
+    file_upload = "race.csv"
+    file_name = RACE_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
+
+    HORSE_DIR = MAIN_DIR+"horse.csv"
     horse_df.to_csv(HORSE_DIR, header=True, index=False)
+    file_upload = "horse.csv"
+    file_name = HORSE_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
+
+    HORSE_INFO_DIR = MAIN_DIR+"horse_info.csv"
     horse_info_df.to_csv(HORSE_INFO_DIR, header=True, index=False)
+    file_upload = "horse_info.csv"
+    file_name = HORSE_INFO_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
+
+    HORSE_RACE_DIR = MAIN_DIR+"horse_race.csv"
     horse_race_df.to_csv(HORSE_RACE_DIR, header=True, index=False)
+    file_upload = "horse_race.csv"
+    file_name = HORSE_RACE_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
 
 ###
+

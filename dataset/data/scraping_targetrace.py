@@ -5,6 +5,7 @@ import set_url
 import open_chrome
 import columns
 import data_cleansing
+import upload_cloudstorage
 
 import pandas as pd
 import numpy as np
@@ -20,6 +21,7 @@ from bs4 import BeautifulSoup
 import os
 import time
 import requests
+from google.cloud import storage
 
 #保存先のディレクトリ
 dir = 'osaka'
@@ -199,7 +201,7 @@ def get_horse_html(horse_id, html):
         if index == 0:
             continue
         horse_race_list = []
-        horse_ra_se = pd.Series()
+        horse_ra_se = pd.Series(dtype='str')
 
         horse_tds = horse_tr.findAll("td")
         horse_race_list.append(horse_tds[0].get_text())
@@ -232,7 +234,7 @@ def get_horse_html(horse_id, html):
         except:
             horse_race_list.append(None)
         horse_race_list.append(horse_tds[27].get_text())
-        horse_ra_se = pd.Series(horse_race_list, index=columns.horse_race_columns(),dtype='object')###
+        horse_ra_se = pd.Series(horse_race_list, index=columns.horse_race_columns(),dtype='str')###
         horse_race_tmp_df = pd.concat([horse_race_tmp_df, horse_ra_se.to_frame().T], ignore_index=True)
 #     horse_race_tmp_df = pd.DataFrame(horse_race_list, columns=horse_race_columns)
     horse_race_tmp_df.loc[:, 'horse_id'] = horse_id    
@@ -316,21 +318,51 @@ if __name__ == '__main__':
     race_df = data_cleansing.where_racecourse(race_df)
     race_df = data_cleansing.total_horse_number(race_df)
     # race_df = data_cleansing.money(race_df)
+    
+    try:
+        horse_df = data_cleansing.rank(horse_df)
+    except:
+        pass
+    try:
+        horse_df = data_cleansing.sex_and_age(horse_df)
+    except:
+        pass
+    try:
+        horse_df = data_cleansing.goal_time(horse_df)
+    except:
+        pass
+    try:
+        horse_df = data_cleansing.last_time(horse_df)
+    except:
+        pass
 
-    # horse_df = data_cleansing.rank(horse_df)
-    horse_df = data_cleansing.sex_and_age(horse_df)
-    # horse_df = data_cleansing.goal_time(horse_df)
-    # horse_df = data_cleansing.last_time(horse_df)
-    # horse_df = data_cleansing.tame_time(horse_df)
-    # horse_df = data_cleansing.half_way_rank(horse_df)
-    horse_df = data_cleansing.horse_weight(horse_df)
-    # horse_df = data_cleansing.goal_time_dif(horse_df)
+    horse_df = data_cleansing.odds(horse_df)
+    horse_df = data_cleansing.popular(horse_df)
+    try:
+        horse_df = data_cleansing.tame_time(horse_df)
+    except:
+        pass
+    try:
+        horse_df = data_cleansing.half_way_rank(horse_df)
+    except:
+        pass
+    try:
+        horse_df = data_cleansing.horse_weight(horse_df)
+    except:
+        pass
+    try:
+        horse_df = data_cleansing.goal_time_dif(horse_df)
+    except:
+        pass
     try:
         horse_df = data_cleansing.burden_weight_rate(horse_df)
     except:
         pass
-    # horse_df = data_cleansing.avg_velocity(horse_df, race_df)
-
+    try:
+        horse_df = data_cleansing.avg_velocity(horse_df, race_df)
+    except:
+        pass
+    horse_df = data_cleansing.horse_name(horse_df)
 
     horse_info_df = data_cleansing.producer_id(horse_info_df)
     horse_info_df = data_cleansing.production_area(horse_info_df)
@@ -338,27 +370,57 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.winnings(horse_info_df)
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
 
+
+###今回は断念
+    horse_info_df = horse_info_df.drop(['auction_price','winnings'],axis=1)
+
+    horse_race_df = data_cleansing.race_title(horse_race_df)
     horse_race_df = data_cleansing.horse_weight(horse_race_df)
     horse_race_df = data_cleansing.where_racecourse(horse_race_df)
     horse_race_df = data_cleansing.weather(horse_race_df)
     horse_race_df = data_cleansing.distance(horse_race_df)
     horse_race_df = data_cleansing.ground_type(horse_race_df)
     horse_race_df = data_cleansing.ground_status(horse_race_df)
+    horse_race_df = data_cleansing.prize(horse_race_df)
 
-####
+###今回は断念
+    horse_race_df = horse_race_df.drop('prize',axis=1)
 
-    MAIN_HORSE_DIR = "main/"+dir+"/"
-    if not os.path.isdir(MAIN_HORSE_DIR):
-        os.makedirs(MAIN_HORSE_DIR)
+###
 
-    RACE_DIR = MAIN_HORSE_DIR+"targetrace.csv"
-    HORSE_DIR = MAIN_HORSE_DIR+"targethorse.csv"
-    HORSE_INFO_DIR = MAIN_HORSE_DIR+"targethorse_info_df.csv"
-    HORSE_RACE_DIR = MAIN_HORSE_DIR+"targethorse_race_df.csv"
+    bucket_name = dir + "_csv_upload_bucket"
 
+    # バケットが存在しない場合は新しいバケットを作成する
+    storage_client = storage.Client()
+    if not storage_client.lookup_bucket(bucket_name):
+        upload_cloudstorage.create_bucket(bucket_name)
+    
+    MAIN_DIR = "main/"+dir+"/"
+    if not os.path.isdir(MAIN_DIR):
+        os.makedirs(MAIN_DIR)
+
+    RACE_DIR = MAIN_DIR+"targetrace.csv"
     race_df.to_csv(RACE_DIR, header=True, index=False)
-    horse_df.to_csv(HORSE_DIR, header=True, index=False)
-    horse_info_df.to_csv(HORSE_INFO_DIR, header=True, index=False)
-    horse_race_df.to_csv(HORSE_RACE_DIR, header=True, index=False)
+    file_upload = "targetrace.csv"
+    file_name = RACE_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
 
-####
+    HORSE_DIR = MAIN_DIR+"targethorse.csv"
+    horse_df.to_csv(HORSE_DIR, header=True, index=False)
+    file_upload = "targethorse.csv"
+    file_name = HORSE_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
+
+    HORSE_INFO_DIR = MAIN_DIR+"targethorse_info.csv"
+    horse_info_df.to_csv(HORSE_INFO_DIR, header=True, index=False)
+    file_upload = "targethorse_info.csv"
+    file_name = HORSE_INFO_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
+
+    HORSE_RACE_DIR = MAIN_DIR+"targethorse_race.csv"
+    horse_race_df.to_csv(HORSE_RACE_DIR, header=True, index=False)
+    file_upload = "targethorse_race.csv"
+    file_name = HORSE_RACE_DIR
+    upload_cloudstorage.upload(bucket_name, file_upload, file_name)
+
+###
