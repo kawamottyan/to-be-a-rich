@@ -1,4 +1,4 @@
-horse_id,bday,tame_id,owner_id,producer_id,production_area,auction_price,winnings,lifetime_record,wined_race_title,inbreeding-1,inbreeding-2,father,faths_father,faths_mother,mother,moths_father,moths_mother
+horse_id,bday,tame_id,owner_id,producer_id,production_area,auction_price,winnings,lifetime_record,wined_race_title,inbreeding_1,inbreeding_2,father,faths_father,faths_mother,mother,moths_father,moths_mother
 2009102678,2009年4月20日,01013,003060,811540,日高町,"
 -
 ","
@@ -500,7 +500,7 @@ horse_id,bday,tame_id,owner_id,producer_id,production_area,auction_price,winning
 
 10億7,381万円 (中央)
 
-",2016104532,202005030211,,2002100816,000a00033a,000a0003a2,000a01205e,000a011248,000a012026
+",2016104532,202109050611,,2002100816,000a00033a,000a0003a2,000a01205e,000a011248,000a012026
 2016104729,2016年1月22日,01061,006030,373126,安平町,"
 -
 ","
@@ -600,7 +600,7 @@ horse_id,bday,tame_id,owner_id,producer_id,production_area,auction_price,winning
 
 3億5,190万円 (中央)
 
-",2017101431,202106040711,,2004103328,1995108676,1993109144,2003110225,000a0022cf,000a01087a
+",2017101431,2022H1121104,,2004103328,1995108676,1993109144,2003110225,000a0022cf,000a01087a
 2017105335,2017年1月28日,01117,486800,owner.netkeiba.com,ノーザンファーム,安平町,"
 -
 ","

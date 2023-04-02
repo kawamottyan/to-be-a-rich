@@ -350,9 +350,17 @@ def lifetime_record(horse_info_df):
 
 #wined race title
 
-#inbreeding-1
+#inbreeding_1
+def inbreeding_1(horse_info_df):
+    horse_info_df['inbreeding_1'] = horse_info_df['inbreeding_1'].astype(str)
+    return horse_info_df
 
-#inbreeding-2
+#inbreeding_2
+def inbreeding_2(horse_info_df):
+    horse_info_df['inbreeding_2'].fillna(0, inplace=True)
+    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(int)
+    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str)
+    return horse_info_df
 
 #father
 

@@ -452,6 +452,13 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.auction_price(horse_info_df)
     horse_info_df = data_cleansing.winnings(horse_info_df)
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
+    horse_info_df = data_cleansing.inbreeding_1(horse_info_df)
+    horse_info_df = data_cleansing.inbreeding_2(horse_info_df)
+    horse_info_df['inbreeding_2'].replace(0, np.nan, inplace=True)
+
+
+###今回は断念
+    horse_info_df = horse_info_df.drop(['auction_price','winnings'],axis=1)
 
     horse_race_df = data_cleansing.race_title(horse_race_df)
     horse_race_df = data_cleansing.horse_weight(horse_race_df)
@@ -461,6 +468,10 @@ if __name__ == '__main__':
     horse_race_df = data_cleansing.ground_type(horse_race_df)
     horse_race_df = data_cleansing.ground_status(horse_race_df)
     horse_race_df = data_cleansing.delete_race(horse_race_df,race_date_dict)
+
+###今回は断念
+    horse_race_df = horse_race_df.drop('prize',axis=1)
+
 
 ###
 
