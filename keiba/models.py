@@ -18,8 +18,8 @@ class PredResults(models.Model):
     fourteen = models.FloatField()
     fifteen = models.FloatField()
     sixteen = models.FloatField()
-    seventeen = models.FloatField()
-    eighteen = models.FloatField()
+    #seventeen = models.FloatField()
+    #eighteen = models.FloatField()
     #rank = models.FloatField()
 
     def __str__(self):

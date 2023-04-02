@@ -4,7 +4,7 @@
 <!--Alert-->
 <div class="container">
     <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
-        今週の<strong>大阪杯</strong>は金曜に更新します。
+        <strong>大阪杯</strong>は土曜から分析できます。
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 </div>
@@ -22,24 +22,24 @@
             </div>
             <div class="modal-body">
                 <h5>予想順位:</h5>
-                <div>トゥラヴェスーラ: <span id="on"></span></div>
-                <div>ウォーターナビレラ: <span id="tw"></span></div>
-                <div>キルロード: <span id="th"></span></div>
-                <div>ダディーズビビッド: <span id="fo"></span></div>
-                <div>メイケイエール: <span id="fi"></span></div>
-                <div>ナランフレグ: <span id="si"></span></div>
-                <div>ヴェントヴォーチェ: <span id="se"></span></div>
-                <div>ロータスランド: <span id="ei"></span></div>
-                <div>ディヴィナシオン: <span id="ni"></span></div>
-                <div>オパールシャルム: <span id="te"></span></div>
-                <div>ピクシーナイト: <span id="ele"></span></div>
-                <div>アグリ: <span id="twe"></span></div>
-                <div>ファストフォース: <span id="thi"></span></div>
-                <div>トウシンマカオ: <span id="fou"></span></div>
-                <div>ナムラクレア: <span id="fif"></span></div>
-                <div>グレナディアガーズ: <span id="sixt"></span></div>
-                <div>ボンボヤージ: <span id="sev"></span></div>
-                <div>ウインマーベル: <span id="eig"></span></div>
+                <div>ジェラルディーナ: <span id="on"></span></div>
+                <div>マリアエレーナ: <span id="tw"></span></div>
+                <div>モズベッロ: <span id="th"></span></div>
+                <div>ノースブリッジ: <span id="fo"></span></div>
+                <div>ワンダフルタウン: <span id="fi"></span></div>
+                <div>ヴェルトライゼンデ: <span id="si"></span></div>
+                <div>マテンロウレオ: <span id="se"></span></div>
+                <div>ラーグルフ: <span id="ei"></span></div>
+                <div>ジャックドール: <span id="ni"></span></div>
+                <div>ポタジェ: <span id="te"></span></div>
+                <div>スターズオンアース: <span id="ele"></span></div>
+                <div>キラーアビリティ: <span id="twe"></span></div>
+                <div>ダノンザキッド: <span id="thi"></span></div>
+                <div>ヒシイグアス: <span id="fou"></span></div>
+                <div>ヒンドゥタイムズ: <span id="fif"></span></div>
+                <div>ノースザワールド: <span id="sixt"></span></div>
+                <!--<div>ボンボヤージ: <span id="sev"></span></div>
+                <div>ウインマーベル: <span id="eig"></span></div>-->
                 <!--
                 <h5 class="pt-3">確率:</h5>
                 <div id="prediction"></div>
@@ -56,83 +56,83 @@
 <div class="container pt-2">
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <h1>高松宮記念</h1>
+            <h1>大阪杯</h1>
             <h5 class="pt-3 pb-3">馬体重記入</h5>
             <form action="" id="post-form">
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <label for="one">トゥラヴェスーラ</label>
-                    <input type="number" step="0.1" class="form-control" id="one" value="484.0" required>
+                    <label for="one">ジェラルディーナ</label>
+                    <input type="number" step="0.1" class="form-control" id="one" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="two">ウォーターナビレラ</label>
-                    <input type="number" step="0.1" class="form-control" id="two" value="470.0" required>
+                    <label for="two">マリアエレーナ</label>
+                    <input type="number" step="0.1" class="form-control" id="two" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="three">キルロード</label>
-                    <input type="number" step="0.1" class="form-control" id="three" value="502.0" required>
+                    <label for="three">モズベッロ</label>
+                    <input type="number" step="0.1" class="form-control" id="three" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="four">ダディーズビビッド</label>
-                    <input type="number" step="0.1" class="form-control" id="four" value="512.0" required>
+                    <label for="four">ノースブリッジ</label>
+                    <input type="number" step="0.1" class="form-control" id="four" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="five">メイケイエール</label>
-                    <input type="number" step="0.1" class="form-control" id="five" value="486.0" required>
+                    <label for="five">ワンダフルタウン</label>
+                    <input type="number" step="0.1" class="form-control" id="five" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="six">ナランフレグ</label>
-                    <input type="number" step="0.1" class="form-control" id="six" value="492.0" required>
+                    <label for="six">ヴェルトライゼンデ</label>
+                    <input type="number" step="0.1" class="form-control" id="six" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="seven">ヴェントヴォーチェ</label>
-                    <input type="number" step="0.1" class="form-control" id="seven" value="520.0" required>
+                    <label for="seven">マテンロウレオ</label>
+                    <input type="number" step="0.1" class="form-control" id="seven" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="eight">ロータスランド</label>
-                    <input type="number" step="0.1" class="form-control" id="eight" value="484.0" required>
+                    <label for="eight">ラーグルフ</label>
+                    <input type="number" step="0.1" class="form-control" id="eight" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="nine">ディヴィナシオン</label>
-                    <input type="number" step="0.1" class="form-control" id="nine" value="478.0" required>
+                    <label for="nine">ジャックドール</label>
+                    <input type="number" step="0.1" class="form-control" id="nine" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="ten">オパールシャルム</label>
-                    <input type="number" step="0.1" class="form-control" id="ten" value="476.0" required>
+                    <label for="ten">ポタジェ</label>
+                    <input type="number" step="0.1" class="form-control" id="ten" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="eleven">ピクシーナイト</label>
-                    <input type="number" step="0.1" class="form-control" id="eleven" value="530.0" required>
+                    <label for="eleven">スターズオンアース</label>
+                    <input type="number" step="0.1" class="form-control" id="eleven" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="twelve">アグリ</label>
-                    <input type="number" step="0.1" class="form-control" id="twelve" value="492.0" required>
+                    <label for="twelve">キラーアビリティ</label>
+                    <input type="number" step="0.1" class="form-control" id="twelve" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="thirteen">ファストフォース</label>
-                    <input type="number" step="0.1" class="form-control" id="thirteen" value="518.0" required>
+                    <label for="thirteen">ダノンザキッド</label>
+                    <input type="number" step="0.1" class="form-control" id="thirteen" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="fourteen">トウシンマカオ</label>
-                    <input type="number" step="0.1" class="form-control" id="fourteen" value="462.0" required>
+                    <label for="fourteen">ヒシイグアス</label>
+                    <input type="number" step="0.1" class="form-control" id="fourteen" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="fifteen">ナムラクレア</label>
-                    <input type="number" step="0.1" class="form-control" id="fifteen" value="466.0" required>
+                    <label for="fifteen">ヒンドゥタイムズ</label>
+                    <input type="number" step="0.1" class="form-control" id="fifteen" value="500.0" required>
                 </div>
                 <div class="form-group">
-                    <label for="sixteen">グレナディアガーズ</label>
-                    <input type="number" step="0.1" class="form-control" id="sixteen" value="468.0" required>
+                    <label for="sixteen">ノースザワールド</label>
+                    <input type="number" step="0.1" class="form-control" id="sixteen" value="500.0" required>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label for="seventeen">ボンボヤージ</label>
                     <input type="number" step="0.1" class="form-control" id="seventeen" value="436.0" required>
                 </div>
                 <div class="form-group">
                     <label for="eighteen">ウインマーベル</label>
                     <input type="number" step="0.1" class="form-control" id="eighteen" value="474.0" required>
-                </div>
+                </div>-->
 
                 <button type="submit" value="Submit" class="btn btn-primary mb-5" data-toggle="modal" data-target="#exampleModal">Submit</button>
             </form>
@@ -163,8 +163,8 @@
                 fourteen:$('#fourteen').val(),
                 fifteen:$('#fifteen').val(),
                 sixteen:$('#sixteen').val(),
-                seventeen:$('#seventeen').val(),
-                eighteen:$('#eighteen').val(),
+            /*  seventeen:$('#seventeen').val(),
+                eighteen:$('#eighteen').val(),*/
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'
             },
@@ -187,8 +187,8 @@
                 document.getElementById("fou").innerHTML = json['fourteen']
                 document.getElementById("fif").innerHTML = json['fifteen']
                 document.getElementById("sixt").innerHTML = json['sixteen']
-                document.getElementById("sev").innerHTML = json['seventeen']
-                document.getElementById("eig").innerHTML = json['eighteen']
+            /*    document.getElementById("sev").innerHTML = json['seventeen']
+                document.getElementById("eig").innerHTML = json['eighteen']*/
             },
             error : function(xhr,errmsg,err) {
 

@@ -28,8 +28,8 @@ def predict_chances(request):
         fourteen = float(request.POST.get('fourteen'))
         fifteen = float(request.POST.get('fifteen'))
         sixteen = float(request.POST.get('sixteen'))
-        seventeen = float(request.POST.get('seventeen'))
-        eighteen = float(request.POST.get('eighteen'))
+        #seventeen = float(request.POST.get('seventeen'))
+        #eighteen = float(request.POST.get('eighteen'))
 
         try:
             one = float(one)
@@ -61,8 +61,8 @@ def predict_chances(request):
         today_race_X.loc[today_race_X['horse_number'] == 14, 'horse_weight'] = fourteen
         today_race_X.loc[today_race_X['horse_number'] == 15, 'horse_weight'] = fifteen
         today_race_X.loc[today_race_X['horse_number'] == 16, 'horse_weight'] = sixteen
-        today_race_X.loc[today_race_X['horse_number'] == 17, 'horse_weight'] = seventeen
-        today_race_X.loc[today_race_X['horse_number'] == 18, 'horse_weight'] = eighteen
+        #today_race_X.loc[today_race_X['horse_number'] == 17, 'horse_weight'] = seventeen
+        #today_race_X.loc[today_race_X['horse_number'] == 18, 'horse_weight'] = eighteen
 
         today_race_X = today_race_X.sort_values('horse_number')
         train_baskets = today_race_X.groupby(["race_id"])["horse_id"].count().values
@@ -91,7 +91,7 @@ def predict_chances(request):
         #                      'sixteen': sixteen, 'seventeen': seventeen, 'eighteen': eighteen},
         #                     safe=False)
 
-        ranknum = np.arange(1, 19)
+        ranknum = np.arange(1, 17)
         sorted_rank = ranknum[np.argsort(y_pred)[::-1]]
 
         rank1 = sorted_rank[0]
@@ -126,16 +126,16 @@ def predict_chances(request):
         rank15 = int(rank15)
         rank16 = sorted_rank[15]
         rank16 = int(rank16)
-        rank17 = sorted_rank[16]
-        rank17 = int(rank17)
-        rank18 = sorted_rank[17]
-        rank18 = int(rank18)
+        # rank17 = sorted_rank[16]
+        # rank17 = int(rank17)
+        # rank18 = sorted_rank[17]
+        # rank18 = int(rank18)
 
 
         PredResults.objects.create(one=one, two=two, three=three, four=four, five=five,
                                    six=six, seven=seven, eight=eight, nine=nine, ten=ten,
                                    eleven=eleven, twelve=twelve, thirteen=thirteen, fourteen=fourteen, fifteen=fifteen,
-                                   sixteen=sixteen, seventeen=seventeen, eighteen=eighteen,# rank=rank1
+                                   sixteen=sixteen, #seventeen=seventeen, eighteen=eighteen,# rank=rank1
                                    )
 
         # PredResults.objects.create(rank1=rank1, rank2=rank2, rank3=rank3, rank4=rank4, rank5=rank5,
@@ -149,7 +149,8 @@ def predict_chances(request):
                             'one': rank1, 'two': rank2, 'three': rank3, 'four': rank4, 'five': rank5,
                             'six': rank6, 'seven': rank7, 'eight': rank8, 'nine': rank9, 'ten': rank10,
                             'eleven': rank11, 'twelve': rank12, 'thirteen': rank13, 'fourteen': rank14, 'fifteen': rank15,
-                            'sixteen': rank16, 'seventeen': rank17, 'eighteen': rank18},
+                            'sixteen': rank16, #'seventeen': rank17, 'eighteen': rank18
+                            },
                             safe=False)
 
 
