@@ -1,0 +1,4 @@
+# htmlファイルは要らない
+*.html
+# keyフォルダは要らない
+dataset/key/
