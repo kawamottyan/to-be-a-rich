@@ -14,7 +14,8 @@ import re
 
 #race_round
 def race_round(race_df):
-    race_df['race_round'] = race_df['race_round'].str.strip('R \n')
+    #race_df['race_round'] = race_df['race_round'].str.strip('R \n')
+    race_df['race_round'] = race_df['race_round'].astype(str).str.strip('R \n').fillna(0).astype(int)
     return race_df
 
 #race_title
@@ -357,7 +358,10 @@ def inbreeding_1(horse_info_df):
 
 #inbreeding_2
 def inbreeding_2(horse_info_df):
-    horse_info_df["inbreeding_2"] = pd.to_string(horse_info_df["inbreeding_2"])
+    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str).str.rstrip('.0')
+    # horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str)
+    # horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].rstrip('.0')
+
     # horse_info_df['inbreeding_2'].fillna(0, inplace=True)
     # horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(int)
     # horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str)

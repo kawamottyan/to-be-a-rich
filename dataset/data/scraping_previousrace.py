@@ -289,7 +289,7 @@ def get_horse_html(horse_id, race_id, html):
 
     # url_partsの要素数が2未満の場合、残りの要素をNaNで埋める
     while len(url_parts) < 2:
-        url_parts.append(np.nan)
+        url_parts.append("NaN")
 
     # horse_listにurl_partsを追加する
     horse_list.extend(url_parts)
@@ -454,8 +454,6 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_1(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_2(horse_info_df)
-    #horse_info_df['inbreeding_2'].replace(0, np.nan, inplace=True)
-    # horse_info_df['inbreeding_2 Column'] = horse_info_df['inbreeding_2 Column'].replace(0, np.nan)
 
 
 ###今回は断念

@@ -1,4 +1,4 @@
 # htmlファイルは要らない
-*.html
+dataset/data/html/
 # keyフォルダは要らない
-dataset/key/
+dataset/key/*.json

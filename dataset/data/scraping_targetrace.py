@@ -175,7 +175,7 @@ def get_horse_html(horse_id, html):
 
     # url_partsの要素数が2未満の場合、残りの要素をNaNで埋める
     while len(url_parts) < 2:
-        url_parts.append(np.nan)
+        url_parts.append("NaN")
 
     # horse_listにurl_partsを追加する
     horse_list.extend(url_parts)

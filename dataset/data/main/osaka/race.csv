@@ -1,0 +1,2 @@
+race_id,race_round,race_title,weather,ground_status,date,where_racecourse,total_horse_number,frame_number_first,horse_number_first,frame_number_second,horse_number_second,frame_number_third,horse_number_third,tansyo,hukusyo_first,hukusyo_second,hukusyo_third,wakuren,umaren,wide_1_2,wide_1_3,wide_2_3,umatan,renhuku3,rentan3,is_obstacle,ground_type,is_left_right_straight,distance,datetime
+202209020411,11,第66回大阪杯(G1),1,1,2022-04-03,9,16,4,8,7,14,5,9,5870,1140,420,1240,4790,10980,1990,7110,3160,39630,50990,537590,0,1,1,2000,2022-04-03 15:40:00
