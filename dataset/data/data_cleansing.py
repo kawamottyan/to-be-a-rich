@@ -357,9 +357,10 @@ def inbreeding_1(horse_info_df):
 
 #inbreeding_2
 def inbreeding_2(horse_info_df):
-    horse_info_df['inbreeding_2'].fillna(0, inplace=True)
-    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(int)
-    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str)
+    horse_info_df["inbreeding_2"] = pd.to_string(horse_info_df["inbreeding_2"])
+    # horse_info_df['inbreeding_2'].fillna(0, inplace=True)
+    # horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(int)
+    # horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str)
     return horse_info_df
 
 #father

@@ -34,7 +34,7 @@ def html():
 
     #検索条件の記述
     race_name = "大阪杯"
-    year = 2006
+    year = 2022
     month = 1
     end_year = 2022
     end_month = 12
@@ -454,7 +454,8 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_1(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_2(horse_info_df)
-    horse_info_df['inbreeding_2'].replace(0, np.nan, inplace=True)
+    #horse_info_df['inbreeding_2'].replace(0, np.nan, inplace=True)
+    # horse_info_df['inbreeding_2 Column'] = horse_info_df['inbreeding_2 Column'].replace(0, np.nan)
 
 
 ###今回は断念
@@ -471,6 +472,17 @@ if __name__ == '__main__':
 
 ###今回は断念
     horse_race_df = horse_race_df.drop('prize',axis=1)
+
+
+
+    print('race_df')
+    print(race_df.info())
+    print('horse_df')
+    print(horse_df.info())
+    print('horse_info_df')
+    print(horse_info_df.info())
+    print('horse_race_df')
+    print(horse_race_df.info())
 
 
 ###
