@@ -433,11 +433,10 @@ if __name__ == '__main__':
     race_df = data_cleansing.ground_type(race_df)
     race_df = data_cleansing.is_left_right_straight(race_df)
     race_df = data_cleansing.distance(race_df)
-
-
     race_df = data_cleansing.weather(race_df)
     race_df = data_cleansing.ground_status(race_df)
     race_df = data_cleansing.time(race_df)
+    
     race_df = data_cleansing.where_racecourse(race_df)
     race_df = data_cleansing.total_horse_number(race_df)
     race_df = data_cleansing.frame_number_first(race_df)

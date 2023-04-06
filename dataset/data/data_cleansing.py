@@ -103,29 +103,29 @@ def weather(race_df):
 def ground_status(race_df):
     race_df['ground_status'] = race_df['ground_status'].replace('.*(良).*', 1,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(稍).*', 2,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 2,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(重).*', 3,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 2,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(不).*', 5,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(不良).*', 4,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('', np.nan)
     race_df['ground_status'] = race_df['ground_status'].replace(np.nan, 0)
     return race_df
 
-#time
-def time(race_df):
-    race_df["time"] = race_df["time"].str.extract(r"(\d{1,2}:\d{2})")
-    race_df["date"] = pd.to_datetime(race_df["date"], format='%Y年%m月%d日')
-    race_df["datetime"] = race_df["date"].dt.strftime('%Y年%m月%d日') + race_df["time"]
-    race_df["datetime"] = pd.to_datetime(race_df["datetime"], format='%Y年%m月%d日%H:%M')
-    # race_df["datetime"] = race_df["date"] + race_df["time"]
-    # race_df["datetime"] = pd.to_datetime(race_df['datetime'], format='%Y年%m月%d日%H時%M分')
-    race_df = race_df.drop(['time'],axis=1)
-    return race_df
-
 #date
 def date(race_df):
     race_df["date"] = race_df["date"].str.split().str[0]
     return race_df
+
+#time
+def time(race_df):
+    race_df["time"] = race_df["time"].str.extract(r"(\d{1,2}:\d{2})") #timeカラムを正規表現で抽出
+    race_df["datetime"] = race_df["date"].astype(str) + race_df["time"].astype(str) #timeとdateを結合して、datetimeを作成
+    race_df["datetime"] = pd.to_datetime(race_df["datetime"], format='%Y年%m月%d日%H:%M') #datetimeカラムを時間単位に変換 
+    race_df["time"] = pd.to_datetime(race_df["time"], format='%H:%M') #timeカラムを時間単位に変換 
+    race_df["date"] = pd.to_datetime(race_df["date"], format='%Y年%m月%d日') #dateカラムを時間単位に変換 
+    race_df = race_df.drop(['time'],axis=1)
+    return race_df
+
 
 #where_racecourse
 def where_racecourse(race_df):
@@ -148,7 +148,7 @@ def where_racecourse(race_df):
     race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(京都).*', 8,regex=True)
     race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(阪神).*', 9,regex=True)
     race_df['where_racecourse'] = race_df['where_racecourse'].replace('.*(小倉).*', 10,regex=True)
-    race_df["where_racecourse"] = race_df["where_racecourse"].astype(str).apply(lambda x: 0 if not x.isdigit() else x)
+    race_df["where_racecourse"] = race_df["where_racecourse"].astype(str).apply(lambda x: 0 if not x.isdigit() else x)#数字以外を0に
     race_df['where_racecourse'] = race_df['where_racecourse'].astype(int)
     return race_df
 
@@ -191,18 +191,30 @@ def horse_number_third(race_df):
     return race_df
 #taisyo, hukusyo_first, hukusyo_second, hukusyo_third, wakuren, umaren, wide_1_2, wide_1_3, wide_2_3, umatan, renhuku3, rentan3
 def money(race_df):
-    race_df['tansyo'] = race_df['tansyo'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['hukusyo_first'] = race_df['hukusyo_first'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['hukusyo_second'] = race_df['hukusyo_second'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['hukusyo_third'] = race_df['hukusyo_third'].apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['wakuren'] = race_df['wakuren'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['umaren'] = race_df['umaren'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['wide_1_2'] = race_df['wide_1_2'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['wide_1_3'] = race_df['wide_1_3'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['wide_2_3'] = race_df['wide_2_3'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['umatan'] = race_df['umatan'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['renhuku3'] = race_df['renhuku3'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x))
-    # race_df['rentan3'] = race_df['rentan3'].astype(str).apply(lambda x: int(x.replace(",", "")) if type(x) is str else int(x)) 
+    race_df['tansyo'] = race_df['tansyo'].astype(str).str.replace(",", "")
+    race_df['tansyo'] = race_df['tansyo'].astype(int)
+    race_df['hukusyo_first'] = race_df['hukusyo_first'].astype(str).str.replace(",", "")
+    race_df['hukusyo_first'] = race_df['hukusyo_first'].astype(int)
+    race_df['hukusyo_second'] = race_df['hukusyo_second'].astype(str).str.replace(",", "")
+    race_df['hukusyo_second'] = race_df['hukusyo_second'].astype(int)
+    race_df['hukusyo_third'] = race_df['hukusyo_third'].astype(str).str.replace(",", "")
+    race_df['hukusyo_third'] = race_df['hukusyo_third'].astype(int)
+    race_df['wakuren'] = race_df['wakuren'].astype(str).str.replace(",", "")
+    race_df['wakuren'] = race_df['wakuren'].astype(int)
+    race_df['umaren'] = race_df['umaren'].astype(str).str.replace(",", "")
+    race_df['umaren'] = race_df['umaren'].astype(int)
+    race_df['wide_1_2'] = race_df['wide_1_2'].astype(str).str.replace(",", "")
+    race_df['wide_1_2'] = race_df['wide_1_2'].astype(int)
+    race_df['wide_1_3'] = race_df['wide_1_3'].astype(str).str.replace(",", "")
+    race_df['wide_1_3'] = race_df['wide_1_3'].astype(int)
+    race_df['wide_2_3'] = race_df['wide_2_3'].astype(str).str.replace(",", "")
+    race_df['wide_2_3'] = race_df['wide_2_3'].astype(int)
+    race_df['umatan'] = race_df['umatan'].astype(str).str.replace(",", "")
+    race_df['umatan'] = race_df['umatan'].astype(int)
+    race_df['renhuku3'] = race_df['renhuku3'].astype(str).str.replace(",", "")
+    race_df['renhuku3'] = race_df['renhuku3'].astype(int)
+    race_df['rentan3'] = race_df['rentan3'].astype(str).str.replace(",", "")
+    race_df['rentan3'] = race_df['rentan3'].astype(int)
     return race_df
 
 
