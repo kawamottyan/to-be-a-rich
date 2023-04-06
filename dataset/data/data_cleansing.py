@@ -11,37 +11,33 @@ import re
 
 #race_round
 def race_round(race_df):
-    race_df['race_round'] = race_df['race_round'].astype(str).str.strip()
-    race_df['race_round'] = race_df['race_round'].astype(str).replace(u'\xa0', u'')
-    race_df['race_round'] = race_df['race_round'].astype(str).str.replace('R','')
-    race_df['race_round'] = race_df['race_round'].replace('',0)
-    race_df['race_round'] = race_df['race_round'].fillna(0)
-    race_df['race_round'] = race_df['race_round'].astype(int)
+    race_df['race_round'] = race_df['race_round'].astype(str).str.strip() #スペースの削除
+    race_df['race_round'] = race_df['race_round'].astype(str).replace(u'\xa0', u'') #\xa0ユニコードを変換
+    race_df['race_round'] = race_df['race_round'].astype(str).str.replace('R','') #Rの文字を変換
+    race_df['race_round'] = race_df['race_round'].replace('',0) #空白を0に変換
+    race_df['race_round'] = race_df['race_round'].fillna(0) #NaNを0に変換
+    race_df['race_round'] = race_df['race_round'].astype(int) #int型に変換
     race_df = race_df[race_df['race_round'] != 0] #race_roundがないものは使わない
     return race_df
 
 #race_title
 def race_title(race_df):
-    race_df["race_title"] = race_df["race_title"].str.split().str[0]
-    race_df['race_rank'] = race_df['race_title'].apply(lambda x: re.search(r'\((.*?)\)', x).group(1) if '(' in x else None)
+    race_df["race_title"] = race_df["race_title"].str.split().str[0] #空白で区切られた先頭のみを保存
+    race_df['race_rank'] = race_df['race_title'].apply(lambda x: re.search(r'\((.*?)\)', x).group(1) if '(' in x else None) #()でかこまれたものをrace_rankに保存、(がない場合はNone
     race_df['race_rank'] = race_df['race_rank'].replace('.*G1.*', 3,regex=True)
     race_df['race_rank'] = race_df['race_rank'].replace('.*G2.*', 2,regex=True)
     race_df['race_rank'] = race_df['race_rank'].replace('.*G3.*', 1,regex=True)
-    race_df['race_rank'] = race_df['race_rank'].replace('^(?!.*(G1|G2|G3)).*$', 0, regex=True)
-    #race_df['race_rank'] = race_df['race_rank'].astype(str).str.extract('(\d+)').fillna(0).astype(int)
+    race_df['race_rank'] = race_df['race_rank'].apply(lambda x: 0 if x not in [1, 2, 3] else x) #1,2,3じゃない場合、0にする
+    race_df['race_rank'] = race_df['race_rank'].astype(int)
     return race_df
 
 #race_course
 def race_course(race_df):
-    #ストリングデータから各情報の抽出
-    #障害レース
-    obstacle = race_df["race_course"].str.extract('(障)', expand=True)
-    #ダートor芝レース
-    ground_type = race_df["race_course"].str.extract('(ダ|芝)', expand=True)
-    #右周りor左周り
-    is_left_right_straight = race_df["race_course"].str.extract('(左|右|直線)', expand=True)
-    #距離
-    distance = race_df["race_course"].str.extract('(\d+)m', expand=True)
+    #各情報の抜き出し
+    obstacle = race_df["race_course"].str.extract('(障)', expand=True)#障害レース
+    ground_type = race_df["race_course"].str.extract('(ダ|芝)', expand=True)#ダートor芝レース
+    is_left_right_straight = race_df["race_course"].str.extract('(左|右|直線)', expand=True)#右周りor左周り
+    distance = race_df["race_course"].str.extract('(\d+)m', expand=True)#距離
     #各情報をカラムに変換
     obstacle.columns ={"is_obstacle"}
     ground_type.columns ={"ground_type"}
@@ -52,29 +48,41 @@ def race_course(race_df):
     race_df = pd.concat([race_df, ground_type], axis=1)
     race_df = pd.concat([race_df, is_left_right_straight], axis=1)
     race_df = pd.concat([race_df, distance], axis=1)
-    race_df['distance'] = race_df['distance'].astype(int)
 
-    #右左がないものを直線に変更
-    race_df["is_left_right_straight"] = race_df["is_left_right_straight"].fillna("直線")
-    #障を1に、欠損値を0に変換
-    race_df['is_obstacle'] = race_df['is_obstacle'].replace('障', 1)
-    race_df.fillna(value={'is_obstacle': 0}, inplace=True)
     #オリジナルの削除
     race_df.drop(['race_course'], axis=1, inplace=True)
     return race_df
+
+#is_obstacle
+def is_obstacle(race_df):
+    race_df['is_obstacle'] = race_df['is_obstacle'].replace('障', 1)#障を1に、欠損値を0に変換
+    race_df['is_obstacle'] = race_df['is_obstacle'].replace(np.nan, 0)
+    race_df['is_obstacle'] = race_df['is_obstacle'].astype(int)
+    return race_df   
+
 #ground_type
 def ground_type(race_df):
     race_df['ground_type'] = race_df['ground_type'].replace('.*(ダ).*', 1,regex=True)
     race_df['ground_type'] = race_df['ground_type'].replace('.*(芝).*', 2,regex=True)
-    race_df['ground_type'] = race_df['ground_type'].replace('nan', 0)
-    race_df['ground_type']  = race_df['ground_type'] .astype(int)
+    race_df['ground_type'] = race_df['ground_type'].astype(str).str.strip()
+    race_df['ground_type'] = race_df['ground_type'].replace(np.nan, 0)
+    race_df['ground_type']  = race_df['ground_type'].astype(int)
     return race_df
+
 #is_left_right_straight
 def is_left_right_straight(race_df):
-    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(左).*', 0,regex=True)
-    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(右).*', 1,regex=True)
-    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(直線).*', 2,regex=True)
-    race_df['is_left_right_straight']  = race_df['is_left_right_straight'] .astype(int)
+    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(左).*', 1,regex=True)
+    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(右).*', 2,regex=True)
+    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace('.*(直線).*', 0,regex=True)
+    race_df['is_left_right_straight'] = race_df['is_left_right_straight'].replace(np.nan, 0)
+    race_df['is_left_right_straight']  = race_df['is_left_right_straight'].astype(int)
+    return race_df
+
+#distance
+def distance(race_df):
+    race_df['distance'] = race_df['distance'].replace(np.nan, 0)
+    race_df['distance']  = race_df['distance'].astype(int)
+    race_df = race_df[race_df['distance'] != 0]
     return race_df
 
 #weather
@@ -500,9 +508,9 @@ def delete_race(horse_race_df,race_date_dict):
 
 #distance
 def distance(horse_race_df):
-    horse_race_df['distance'] = horse_race_df['distance'].astype(str)  # 文字列に変換
-    horse_race_df['ground_type'] = horse_race_df['distance'].astype(str).str.extract('(芝|ダ)').astype(str)
-    horse_race_df['distance'] = horse_race_df['distance'].str.extract('(\d+)').astype(int)   
+    horse_race_df['ground_type'] = horse_race_df['distance'].astype(str).str.extract('(芝|ダ)').fillna(0)
+    horse_race_df['distance'] = horse_race_df['distance'].astype(str) .str.extract('(\d+)').fillna(0).astype(int) 
+    print(horse_race_df['ground_type'].unique())  
     return horse_race_df
 
 #groud_status

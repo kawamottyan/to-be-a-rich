@@ -427,9 +427,14 @@ if __name__ == '__main__':
 
     #data_cleansing
     race_df = data_cleansing.race_round(race_df)
+    race_df = data_cleansing.race_title(race_df)
     race_df = data_cleansing.race_course(race_df)
+    race_df = data_cleansing.is_obstacle(race_df)
     race_df = data_cleansing.ground_type(race_df)
     race_df = data_cleansing.is_left_right_straight(race_df)
+    race_df = data_cleansing.distance(race_df)
+
+
     race_df = data_cleansing.weather(race_df)
     race_df = data_cleansing.ground_status(race_df)
     race_df = data_cleansing.time(race_df)
