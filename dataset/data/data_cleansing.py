@@ -88,37 +88,27 @@ def distance(race_df):
 #weather
 def weather(race_df):
     race_df['weather'] = race_df['weather'].astype(str).str.strip('天候 :')
-    race_df['weather'] = race_df['weather'].replace('.*(晴).*', 0,regex=True)
-    race_df['weather'] = race_df['weather'].replace('.*(曇).*', 1,regex=True)
-    race_df['weather'] = race_df['weather'].replace('.*(曇).*', 1,regex=True)
-    race_df['weather'] = race_df['weather'].replace('.*(小雨).*', 2,regex=True)
-    race_df['weather'] = race_df['weather'].replace('.*(小雪).*', 3,regex=True)
-    race_df['weather'] = race_df['weather'].replace('.*(雨).*', 4,regex=True)
-    race_df['weather'] = race_df['weather'].replace('.*(雪).*', 5,regex=True)
-    # weather_rain.columns ={"weather_rain"}
-    # weather_snow.columns ={"weather_snow"}
-    # race_df = pd.concat([race_df, weather_rain], axis=1)
-    # race_df = pd.concat([race_df, weather_snow], axis=1)
-
-    # race_df.fillna(value={'weather_rain': 0}, inplace=True)
-    # race_df['weather_rain'] = race_df['weather_rain'].replace('小雨', 1)
-    # race_df['weather_rain'] = race_df['weather_rain'].replace('雨', 2)
-    # race_df.fillna(value={'weather_snow': 0}, inplace=True)
-    # race_df['weather_snow'] = race_df['weather_snow'].replace('小雪', 1)
-    # race_df['weather_snow'] = race_df['weather_snow'].replace('雪', 2)
+    race_df['weather'] = race_df['weather'].replace('.*(晴).*', 1,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(曇).*', 2,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(小雨).*', 3,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(小雪).*', 4,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(雨).*', 5,regex=True)
+    race_df['weather'] = race_df['weather'].replace('.*(雪).*', 6,regex=True)
     race_df['weather'] = race_df['weather'].replace('', np.nan)
-    race_df['weather'] = race_df['weather'].replace(np.nan, 10)
+    race_df['weather'] = race_df['weather'].replace(np.nan, 0)
     race_df['weather'] = race_df['weather'].astype(int)
     return race_df
 
 #ground_status
 def ground_status(race_df):
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 5,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(重).*', 4,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍).*', 3,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(不).*', 3,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(不良).*', 2,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(良).*', 1,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍).*', 2,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 2,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(重).*', 3,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(不).*', 5,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(不良).*', 4,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('', np.nan)
+    race_df['ground_status'] = race_df['ground_status'].replace(np.nan, 0)
     return race_df
 
 #time
