@@ -11,19 +11,13 @@ import re
 
 #race_round
 def race_round(race_df):
-    # race_df['race_round'] = race_df['race_round'].astype(str).str.strip('R')
-    # race_df['race_round'] = race_df['race_round'].astype(str).str.strip('\n')
-    # race_df['race_round'] = race_df['race_round'].astype(str).str.rstrip()
-    # #race_df['race_round'] = race_df['race_round'].astype(str).str.replace('\s+', '')
-    # race_df['race_round'] = race_df['race_round'].fillna(0)
-    # race_df['race_round'] = race_df['race_round'].astype(int)
-    race_df['race_round'] = race_df['race_round'].astype(str)
-    race_df['race_round'] = race_df['race_round'].replace(u'\xa0', u'')
-    race_df['race_round'] = race_df['race_round'].str.strip('R')
-    race_df['race_round'] = race_df['race_round'].str.strip()
-    race_df['race_round'] = race_df['race_round'].replace('', 0)
+    race_df['race_round'] = race_df['race_round'].astype(str).str.strip()
+    race_df['race_round'] = race_df['race_round'].astype(str).replace(u'\xa0', u'')
+    race_df['race_round'] = race_df['race_round'].astype(str).str.replace('R','')
+    race_df['race_round'] = race_df['race_round'].replace('',0)
+    race_df['race_round'] = race_df['race_round'].fillna(0)
     race_df['race_round'] = race_df['race_round'].astype(int)
-   #race_df['race_round'] = race_df['race_round'].str.strip('R').fillna(0).astype(int)
+    race_df = race_df[race_df['race_round'] != 0] #race_roundがないものは使わない
     return race_df
 
 #race_title

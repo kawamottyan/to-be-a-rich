@@ -208,13 +208,13 @@ def get_race_html(race_id, html):
         # horse_number
         horse_list.append(result_row[2].get_text())
         # horse_id
-        horse_list.append(result_row[3].find('a').get('href').split("/")[-2])
+        horse_list.append(str(result_row[3].find('a').get('href').split("/")[-2]))
         # sex_and_age
         horse_list.append(result_row[4].get_text())
         # burden_weight
         horse_list.append(result_row[5].get_text())
         # rider_id
-        horse_list.append(result_row[6].find('a').get('href').split("/")[-2])
+        horse_list.append(str(result_row[6].find('a').get('href').split("/")[-2]))
         # goal_time
         horse_list.append(result_row[7].get_text())
         # goal_time_dif
@@ -235,9 +235,9 @@ def get_race_html(race_id, html):
         horse_list.append(result_row[15].get_text())
         # 16:コメント、17:備考
         # tamer_id
-        horse_list.append(result_row[18].find('a').get('href').split("/")[-2])
+        horse_list.append(str(result_row[18].find('a').get('href').split("/")[-2]))
         # owner_id
-        horse_list.append(result_row[19].find('a').get('href').split("/")[-2])
+        horse_list.append(str(result_row[19].find('a').get('href').split("/")[-2]))
 
         horse_list_list.append(horse_list)
 
@@ -412,18 +412,18 @@ def csv(HTML_RACE_DIR):
     horse_info_df.to_csv(horse_info_csv, header=True, index=False)
     horse_race_df.to_csv(horse_race_csv, header=True, index=False)
 
-    return race_csv, horse_csv, horse_info_csv, horse_race_csv
+    return race_df, horse_df, horse_info_df, horse_race_df
 
 
 if __name__ == '__main__':
     HTML_RACE_DIR = html()
-    race_csv, horse_csv, horse_info_csv, horse_race_csv = csv(HTML_RACE_DIR)
+    race_df, horse_df, horse_info_df, horse_race_df = csv(HTML_RACE_DIR)
     
     #read_csv
-    race_df = pd.read_csv(race_csv)
-    horse_df = pd.read_csv(horse_csv)
-    horse_info_df = pd.read_csv(horse_info_csv)
-    horse_race_df = pd.read_csv(horse_race_csv)
+    # race_df = pd.read_csv(race_csv)
+    # horse_df = pd.read_csv(horse_csv)
+    # horse_info_df = pd.read_csv(horse_info_csv)
+    # horse_race_df = pd.read_csv(horse_race_csv)
 
     #data_cleansing
     race_df = data_cleansing.race_round(race_df)
@@ -434,19 +434,35 @@ if __name__ == '__main__':
     race_df = data_cleansing.ground_status(race_df)
     race_df = data_cleansing.time(race_df)
     race_df = data_cleansing.where_racecourse(race_df)
+    race_df = data_cleansing.total_horse_number(race_df)
+    race_df = data_cleansing.frame_number_first(race_df)
+    race_df = data_cleansing.horse_number_first(race_df)
+    race_df = data_cleansing.frame_number_second(race_df)
+    race_df = data_cleansing.horse_number_second(race_df)
+    race_df = data_cleansing.frame_number_third(race_df)
+    race_df = data_cleansing.horse_number_third(race_df)
     race_df = data_cleansing.money(race_df)
 
     horse_df = data_cleansing.rank(horse_df)
+    horse_df = data_cleansing.frame_number(horse_df)
+    horse_df = data_cleansing.horse_number(horse_df)
     horse_df = data_cleansing.sex_and_age(horse_df)
     horse_df = data_cleansing.goal_time(horse_df)
     horse_df = data_cleansing.last_time(horse_df)
+    horse_df = data_cleansing.odds(horse_df)
+    horse_df = data_cleansing.popular(horse_df)
     horse_df = data_cleansing.tame_time(horse_df)
     horse_df = data_cleansing.half_way_rank(horse_df)
     horse_df = data_cleansing.horse_weight(horse_df)
     horse_df = data_cleansing.goal_time_dif(horse_df)
     horse_df = data_cleansing.burden_weight_rate(horse_df)
+    horse_df = data_cleansing.rider_id(horse_df)
+    horse_df = data_cleansing.owner_id(horse_df)
+    horse_df = data_cleansing.tamer_id(horse_df)
     horse_df = data_cleansing.avg_velocity(horse_df, race_df)
-
+    
+    
+    horse_info_df = data_cleansing.bday(horse_info_df)
     horse_info_df = data_cleansing.producer_id(horse_info_df)
     horse_info_df = data_cleansing.production_area(horse_info_df)
     horse_info_df = data_cleansing.auction_price(horse_info_df)
@@ -454,24 +470,33 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_1(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_2(horse_info_df)
-
-
 ###今回は断念
     horse_info_df = horse_info_df.drop(['auction_price','winnings'],axis=1)
 
+    horse_race_df = data_cleansing.race_round(horse_race_df)    
     horse_race_df = data_cleansing.race_title(horse_race_df)
+    horse_race_df = data_cleansing.total_horse_number(horse_race_df)
+    horse_race_df = data_cleansing.frame_number(horse_race_df)
+    horse_race_df = data_cleansing.horse_number(horse_race_df)    
     horse_race_df = data_cleansing.horse_weight(horse_race_df)
+    horse_race_df = data_cleansing.odds(horse_race_df)
+    horse_race_df = data_cleansing.popular(horse_race_df)
+    horse_race_df = data_cleansing.rank(horse_race_df)
+    horse_race_df = data_cleansing.burden_weight_rate(horse_race_df)
     horse_race_df = data_cleansing.where_racecourse(horse_race_df)
     horse_race_df = data_cleansing.weather(horse_race_df)
     horse_race_df = data_cleansing.distance(horse_race_df)
     horse_race_df = data_cleansing.ground_type(horse_race_df)
     horse_race_df = data_cleansing.ground_status(horse_race_df)
+    horse_race_df = data_cleansing.goal_time(horse_race_df)
+    horse_race_df = data_cleansing.goal_time_dif(horse_race_df)
+    horse_race_df = data_cleansing.half_way_rank(horse_race_df)
+    horse_race_df = data_cleansing.pace(horse_race_df)
+    horse_race_df = data_cleansing.last_time(horse_race_df)
     horse_race_df = data_cleansing.delete_race(horse_race_df,race_date_dict)
 
 ###今回は断念
     horse_race_df = horse_race_df.drop('prize',axis=1)
-
-
 
     print('race_df')
     print(race_df.info())

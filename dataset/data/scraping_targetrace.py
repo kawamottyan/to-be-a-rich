@@ -371,7 +371,6 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_1(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_2(horse_info_df)
-    horse_info_df['inbreeding_2'].replace(0, np.nan, inplace=True)
 
 ###今回は断念
     horse_info_df = horse_info_df.drop(['auction_price','winnings'],axis=1)
