@@ -293,77 +293,58 @@ def csv(HTML_RACE_DIR,HTML_HORSE_DIR):
     horse_info_df.to_csv(horse_info_csv, header=True, index=False)
     horse_race_df.to_csv(horse_race_csv, header=True, index=False)
 
-    return race_csv, horse_csv, horse_info_csv, horse_race_csv
+    return race_df, horse_df, horse_info_df, horse_race_df
 
 if __name__ == '__main__':
     HTML_RACE_DIR,HTML_HORSE_DIR = html()
-    race_csv, horse_csv, horse_info_csv, horse_race_csv = csv(HTML_RACE_DIR,HTML_HORSE_DIR)
-    
-    #read_csv
-    race_df = pd.read_csv(race_csv)
-    horse_df = pd.read_csv(horse_csv)
-    horse_info_df = pd.read_csv(horse_info_csv)
-    horse_race_df = pd.read_csv(horse_race_csv)
+    race_df, horse_df, horse_info_df, horse_race_df = csv(HTML_RACE_DIR,HTML_HORSE_DIR)
 
     #data_cleansing
+    #race_df
     race_df = data_cleansing.race_round(race_df)
     race_df = data_cleansing.race_title(race_df)
     race_df = data_cleansing.race_course(race_df)
+    race_df = data_cleansing.is_obstacle(race_df)
     race_df = data_cleansing.ground_type(race_df)
     race_df = data_cleansing.is_left_right_straight(race_df)
+    race_df = data_cleansing.distance(race_df)
     race_df = data_cleansing.weather(race_df)
     race_df = data_cleansing.ground_status(race_df)
-    race_df = data_cleansing.date(race_df)
-    race_df = data_cleansing.time(race_df) 
+    race_df = data_cleansing.time(race_df)
     race_df = data_cleansing.where_racecourse(race_df)
     race_df = data_cleansing.total_horse_number(race_df)
+    # race_df = data_cleansing.frame_number_first(race_df)
+    # race_df = data_cleansing.horse_number_first(race_df)
+    # race_df = data_cleansing.frame_number_second(race_df)
+    # race_df = data_cleansing.horse_number_second(race_df)
+    # race_df = data_cleansing.frame_number_third(race_df)
+    # race_df = data_cleansing.horse_number_third(race_df)
     # race_df = data_cleansing.money(race_df)
     
-    try:
-        horse_df = data_cleansing.rank(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.sex_and_age(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.goal_time(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.last_time(horse_df)
-    except:
-        pass
-
+    #horse_df
+    horse_df = data_cleansing.rank(horse_df)
+    horse_df = data_cleansing.frame_number(horse_df)
+    horse_df = data_cleansing.horse_number(horse_df)
+    horse_df = data_cleansing.burden_weight(horse_df)    
+    horse_df = data_cleansing.sex_and_age(horse_df)
+    horse_df = data_cleansing.rider_id(horse_df)
+    horse_df = data_cleansing.goal_time(horse_df)
+    horse_df = data_cleansing.goal_time_dif(horse_df)
+    horse_df = data_cleansing.last_time(horse_df)
     horse_df = data_cleansing.odds(horse_df)
     horse_df = data_cleansing.popular(horse_df)
-    try:
-        horse_df = data_cleansing.tame_time(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.half_way_rank(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.horse_weight(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.goal_time_dif(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.burden_weight_rate(horse_df)
-    except:
-        pass
-    try:
-        horse_df = data_cleansing.avg_velocity(horse_df, race_df)
-    except:
-        pass
-    horse_df = data_cleansing.horse_name(horse_df)
+    horse_df = data_cleansing.tame_time(horse_df)
+    horse_df = data_cleansing.half_way_rank(horse_df)
+    horse_df = data_cleansing.horse_weight(horse_df)
+    horse_df = data_cleansing.tamer_id(horse_df)
+    horse_df = data_cleansing.owner_id(horse_df)
+    horse_df = data_cleansing.burden_weight_rate(horse_df)
+    horse_df = data_cleansing.avg_velocity(horse_df, race_df)
 
+    #horse_info_df
+    horse_info_df = data_cleansing.bday(horse_info_df)
+    horse_info_df = data_cleansing.tamer_id(horse_info_df)
+    horse_info_df = data_cleansing.owner_id(horse_info_df)
     horse_info_df = data_cleansing.producer_id(horse_info_df)
     horse_info_df = data_cleansing.production_area(horse_info_df)
     horse_info_df = data_cleansing.auction_price(horse_info_df)
@@ -371,17 +352,41 @@ if __name__ == '__main__':
     horse_info_df = data_cleansing.lifetime_record(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_1(horse_info_df)
     horse_info_df = data_cleansing.inbreeding_2(horse_info_df)
-
+    horse_info_df = data_cleansing.father(horse_info_df)
+    horse_info_df = data_cleansing.faths_father(horse_info_df)
+    horse_info_df = data_cleansing.faths_mother(horse_info_df)
+    horse_info_df = data_cleansing.mother(horse_info_df)
+    horse_info_df = data_cleansing.moths_father(horse_info_df)
+    horse_info_df = data_cleansing.moths_mother(horse_info_df)
 ###今回は断念
     horse_info_df = horse_info_df.drop(['auction_price','winnings'],axis=1)
 
-    horse_race_df = data_cleansing.race_title(horse_race_df)
-    horse_race_df = data_cleansing.horse_weight(horse_race_df)
+    #horse_race_df
     horse_race_df = data_cleansing.where_racecourse(horse_race_df)
     horse_race_df = data_cleansing.weather(horse_race_df)
-    horse_race_df = data_cleansing.distance(horse_race_df)
+    horse_race_df = data_cleansing.race_round(horse_race_df)
+    horse_race_df = data_cleansing.race_title(horse_race_df)
+    horse_race_df = data_cleansing.total_horse_number(horse_race_df)
+    horse_race_df = data_cleansing.frame_number(horse_race_df)
+    horse_race_df = data_cleansing.horse_number(horse_race_df)
+    horse_race_df = data_cleansing.horse_weight(horse_race_df)
+    horse_race_df = data_cleansing.odds(horse_race_df)
+    horse_race_df = data_cleansing.popular(horse_race_df)
+    horse_race_df = data_cleansing.rank(horse_race_df)
+    horse_race_df = data_cleansing.rider_id(horse_race_df)
+    horse_race_df = data_cleansing.burden_weight(horse_race_df)
+    horse_race_df = data_cleansing.burden_weight_rate(horse_race_df)
+    horse_race_df = data_cleansing.race_course(horse_race_df)
+    horse_race_df = data_cleansing.is_obstacle(horse_race_df)
     horse_race_df = data_cleansing.ground_type(horse_race_df)
+    horse_race_df = data_cleansing.is_left_right_straight(horse_race_df)
+    horse_race_df = data_cleansing.distance(horse_race_df)
     horse_race_df = data_cleansing.ground_status(horse_race_df)
+    horse_race_df = data_cleansing.goal_time(horse_race_df)
+    #horse_race_df = data_cleansing.goal_time_dif(horse_race_df)
+    horse_race_df = data_cleansing.half_way_rank(horse_race_df)
+    horse_race_df = data_cleansing.pace(horse_race_df)
+    horse_race_df = data_cleansing.last_time(horse_race_df)
     horse_race_df = data_cleansing.prize(horse_race_df)
 
 ###今回は断念

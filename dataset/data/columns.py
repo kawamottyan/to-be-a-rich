@@ -96,7 +96,7 @@ def horse_info_columns():
     horse_data_info_columns=[
         'horse_id',
         'bday',
-        'tame_id',
+        'tamer_id',
         'owner_id',
         'producer_id',
         'production_area',
@@ -130,7 +130,8 @@ def horse_race_columns():
                         "rank",
                         "rider_id",
                         "burden_weight",
-                        "distance",
+                        'race_course',
+                        #"distance",上のと入れ替え
                         "ground_status",
                         'goal_time',
                         'goal_time_dif',
@@ -138,7 +139,7 @@ def horse_race_columns():
                         'pace',
                         'last_time',
                         'horse_weight',
-                        'runner-up-horse-id',
+                        'runner_up_horse_id',
                         'prize'
                         ]
     return horse_race_columns

@@ -37,7 +37,7 @@ def race_course(race_df):
     obstacle = race_df["race_course"].str.extract('(障)', expand=True)#障害レース
     ground_type = race_df["race_course"].str.extract('(ダ|芝)', expand=True)#ダートor芝レース
     is_left_right_straight = race_df["race_course"].str.extract('(左|右|直線)', expand=True)#右周りor左周り
-    distance = race_df["race_course"].str.extract('(\d+)m', expand=True)#距離
+    distance = race_df["race_course"].str.extract('(\d+)', expand=True)#距離
     #各情報をカラムに変換
     obstacle.columns ={"is_obstacle"}
     ground_type.columns ={"ground_type"}
@@ -64,7 +64,6 @@ def is_obstacle(race_df):
 def ground_type(race_df):
     race_df['ground_type'] = race_df['ground_type'].replace('.*(ダ).*', 1,regex=True)
     race_df['ground_type'] = race_df['ground_type'].replace('.*(芝).*', 2,regex=True)
-    race_df['ground_type'] = race_df['ground_type'].astype(str).str.strip()
     race_df['ground_type'] = race_df['ground_type'].replace(np.nan, 0)
     race_df['ground_type']  = race_df['ground_type'].astype(int)
     return race_df
@@ -80,9 +79,8 @@ def is_left_right_straight(race_df):
 
 #distance
 def distance(race_df):
-    race_df['distance'] = race_df['distance'].replace(np.nan, 0)
+    race_df.dropna(subset=['distance'], inplace=True)
     race_df['distance']  = race_df['distance'].astype(int)
-    race_df = race_df[race_df['distance'] != 0]
     return race_df
 
 #weather
@@ -217,25 +215,21 @@ def money(race_df):
     race_df['rentan3'] = race_df['rentan3'].astype(int)
     return race_df
 
-
 ##########horse_df##########
 #race_id
 
 #rank
 def rank(horse_df):
-    horse_df["rank"] = horse_df["rank"].astype(str)
-    is_down = horse_df["rank"].str.extract('(\(降\))', expand=True)
+    #is_downカラムを作成
+    is_down = horse_df["rank"].astype(str).str.extract('(\(降\))', expand=True)
     is_down.columns ={"is_down"}
     horse_df = pd.concat([horse_df, is_down], axis=1)
-
     horse_df.fillna(value={'is_down': 0}, inplace=True)
     horse_df['is_down'] = horse_df['is_down'].replace('(降)', 1)
-
     ## 余分な文字を削除
     horse_df['rank'] = horse_df['rank'].apply(lambda x: x.replace("(降)", ""))
     horse_df['rank'] = horse_df['rank'].apply(lambda x: x.replace("(再)", ""))
-    horse_df = horse_df[(horse_df['rank'] != "取") & (horse_df['rank'] != "除") & (horse_df['rank'] != "失")]
-    horse_df['rank'] = pd.DataFrame(horse_df['rank'].mask(horse_df['rank'] == "中", 20))
+    horse_df = horse_df[(horse_df['rank'] != "取") & (horse_df['rank'] != "除") & (horse_df['rank'] != "失") & (horse_df['rank'] != "中")]
     horse_df['rank'] = horse_df['rank'].astype(int)
     return horse_df
 
@@ -246,7 +240,6 @@ def frame_number(horse_df):
     horse_df['frame_number'] = horse_df['frame_number'].astype(int)
     return horse_df
 
-
 #horse_number
 def horse_number(horse_df):
     horse_df['horse_number'] = horse_df['horse_number'].replace(u'\xa0', u'')
@@ -256,61 +249,79 @@ def horse_number(horse_df):
 
 #horse_id
 
+#burden_weight
+def burden_weight(horse_df):
+    horse_df['burden_weight'] = horse_df['burden_weight'].replace(u'\xa0', u'')
+    horse_df['burden_weight'] = horse_df['burden_weight'].replace(np.nan, 0)
+    horse_df['burden_weight'] = horse_df['burden_weight'].astype(float)
+    return horse_df
+
 #sex_and_age
 def sex_and_age(horse_df):
-    #数字のみ抜き出し
-    horse_df["age"] = horse_df["sex_and_age"].str.extract('([0-9]+)', expand=True)
+    #age
+    horse_df["age"] = horse_df["sex_and_age"].str.extract('([0-9]+)', expand=True)#数字のみ抜き出し
     horse_df["age"] = horse_df["age"] .astype(int)
-    #それぞれのステータスを数字に置換
+    #sex
     horse_df["sex_and_age"]  = horse_df["sex_and_age"].replace('.*(牡).*', 0,regex=True)
     horse_df["sex_and_age"]  = horse_df["sex_and_age"].replace('.*(牝).*', 1,regex=True)
     horse_df["sex_and_age"]  = horse_df["sex_and_age"].replace('.*(セ).*', 2,regex=True)
-    #sexを作成
     horse_df["sex"] = horse_df["sex_and_age"]
     horse_df= horse_df.drop('sex_and_age', axis=1)
     return horse_df
 
-#burden_weight
-
 #rider_id
 def rider_id(horse_df):
+    horse_df['rider_id'] = horse_df['rider_id'].replace(u'\xa0', u'')
     horse_df['rider_id'] = horse_df['rider_id'].replace(np.nan, 'NaN')
     return horse_df
 
 #goal_time
 def goal_time(horse_df):
-    horse_df['goal_time'] = horse_df['goal_time'].replace(' ', np.nan)
-    horse_df['goal_time'] = pd.to_datetime(horse_df['goal_time'], format='%M:%S.%f') - pd.to_datetime('00:00.0', format='%M:%S.%f')
-    horse_df['goal_time'] = horse_df['goal_time'].dt.total_seconds()
-    # 欠損値を最大値で埋める
-    horse_df.fillna(value={'goal_time': horse_df['goal_time'].max()}, inplace=True)
+    horse_df['goal_time'] = horse_df['goal_time'].replace(u'\xa0', u'')
+    horse_df['goal_time'] = horse_df['goal_time'].replace('', np.nan)
+    horse_df['goal_time'] = pd.to_datetime(horse_df['goal_time'], format='%M:%S.%f') - pd.to_datetime('00:00.0', format='%M:%S.%f')#00:00.0との差を取得
+    horse_df['goal_time'] = horse_df['goal_time'].dt.total_seconds()#取得した差を秒に変換
+    #horse_df.fillna(value={'goal_time': horse_df['goal_time'].max()}, inplace=True)#欠損値を最大値で埋める
+    #horse_df['goal_time'] = horse_df.groupby('race_id', group_keys=False)['goal_time'].apply(lambda x: x.fillna(x.max()))#欠損値を最大値で埋める
+    horse_df.dropna(subset=['goal_time'], inplace=True)
     horse_df['goal_time'] = horse_df['goal_time'].astype(float)
+    return horse_df
+
+#goal_time_dif
+def goal_time_dif(horse_df):
+    horse_df['goal_time_dif'] = horse_df.groupby('race_id', group_keys=False)['goal_time'].diff().reset_index(drop=True)
+    horse_df.dropna(subset=['goal_time_dif'],inplace=True)
+    horse_df['goal_time_dif'] = horse_df['goal_time_dif'].astype(float)
     return horse_df
 
 #last_time
 def last_time(horse_df):
-    # 欠損値を最大値で埋める
-    horse_df.fillna(value={'last_time': horse_df['last_time'].max()}, inplace=True)
-    horse_df["last_time"] = pd.to_numeric(horse_df["last_time"], errors="coerce")
-    horse_df["last_time"] = horse_df["last_time"].fillna(0).apply(lambda x: int((x // 100) * 60 + (x % 100) + 0.5))
+    horse_df['last_time'] = horse_df['last_time'].replace(u'\xa0', u'')
+    horse_df['last_time'] = horse_df['last_time'].replace('', np.nan)
+    #horse_df.fillna(value={'last_time': horse_df['last_time'].max()}, inplace=True)#欠損値を最大値で埋める
+    #horse_df['last_time'] = horse_df.groupby('race_id', group_keys=False)['last_time'].apply(lambda x: x.fillna(x.max()))#欠損値を最大値で埋める
+    horse_df.dropna(subset=['last_time'], inplace=True)
+    horse_df["last_time"] = horse_df["last_time"].astype(float)
+    horse_df["last_time"] = horse_df["last_time"].apply(lambda x: int((x // 100) * 60 + (x % 100) + 0.5))
     return horse_df
 
 #odds
 def odds(horse_df):
+    horse_df['odds'] = horse_df['odds'].replace(u'\xa0', u'')
     horse_df['odds'] = horse_df['odds'].str.replace('\D', '', regex=True)
     horse_df['odds'] = horse_df['odds'].replace('', 0)
-    horse_df['odds'] = horse_df['odds'].astype(float)
+    horse_df['odds'] = horse_df['odds'].astype(int)
     return horse_df
 
 #popular
 def popular(horse_df):
+    horse_df['popular'] = horse_df['popular'].replace(u'\xa0', u'')
     horse_df['popular'] = horse_df['popular'].str.replace('\D', '', regex=True)
     horse_df['popular'] = horse_df['popular'].replace('', 0)
     horse_df['popular'] = horse_df['popular'].astype(int)
     return horse_df
 
 #time_value
-
 #tame_time
 def tame_time(horse_df):
     #time_value, tame_time(プレミアム会員向けの情報なので削除
@@ -320,77 +331,51 @@ def tame_time(horse_df):
 
 #half_way_rank
 def half_way_rank(horse_df):
-    # horse_df["half_way_rank"] = horse_df["half_way_rank"].apply(lambda x: mean([float(n) for n in (x.split("-"))]) if type(x) is str else float(x) )
-    # horse_df[horse_df["rank"] == 20] = horse_df[horse_df["rank"] == 20].fillna({'half_way_rank': 20})
-    # horse_df["half_way_rank"] = horse_df["half_way_rank"].fillna(horse_df['half_way_rank'].mean())
-    # horse_df["half_way_rank"] = horse_df["half_way_rank"].astype(float)
-    horse_df["half_way_rank"].replace("", np.nan, inplace=True)
-    horse_df["half_way_rank"].replace(" ", np.nan, inplace=True)
+    horse_df['half_way_rank'] = horse_df['half_way_rank'].replace(u'\xa0', u'')
+    horse_df["half_way_rank"] = horse_df["half_way_rank"].replace('', np.nan)
     horse_df["half_way_rank"] = horse_df["half_way_rank"].apply(lambda x: mean([float(n) for n in (x.split("-"))]) if (type(x) is str and len(x) > 0) else float(x))
-    horse_df[horse_df["rank"] == 20] = horse_df[horse_df["rank"] == 20].fillna({'half_way_rank': 20})
-    horse_df["half_way_rank"] = horse_df["half_way_rank"].fillna(horse_df['half_way_rank'].mean())
+    #horse_df['half_way_rank'] = horse_df.groupby('race_id', group_keys=False)['half_way_rank'].apply(lambda x: x.fillna(x.max()))
+    horse_df.dropna(subset=['half_way_rank'], inplace=True)
     horse_df["half_way_rank"] = horse_df["half_way_rank"].astype(float)
     return horse_df
 
 #horse_weight
 def horse_weight(horse_df):
-    horse_df['horse_weight'] = horse_df['horse_weight'].apply(lambda x: x.replace('\n', ''))
-    horse_weight_dif = horse_df["horse_weight"].str.extract('\(([-|+]?\d*)\)', expand=True)
-    horse_weight_dif.columns ={"horse_weight_dif"}
-    horse_df = pd.concat([horse_df, horse_weight_dif], axis=1)
-    horse_df['horse_weight'] = horse_df['horse_weight'].replace('\(([-|+]?\d*)\)', '', regex=True)
-    horse_df['horse_weight'] = horse_df['horse_weight'].replace('.*計不.*', 0,regex=True)
-    horse_df['horse_weight'] = horse_df['horse_weight'].replace('', 0)
-    horse_df['horse_weight'] = horse_df['horse_weight'].replace(' ', 0)
-    try:
-        horse_df['horse_weight'] = horse_df['horse_weight'].astype(int)
-        horse_df['horse_weight_dif'] = horse_df['horse_weight_dif'].replace(np.nan, 0)
-        horse_df['horse_weight_dif'] = horse_df['horse_weight_dif'].astype(str).str.rstrip('+')
-        horse_df['horse_weight_dif'] = horse_df['horse_weight_dif'].replace(np.nan, 0)
-        horse_df['horse_weight_dif'] = horse_df['horse_weight_dif'].astype(int)
-        # 計不 の horse_idを探し、馬ごとの平均値で穴埋め
-        no_records = horse_df[horse_df['horse_weight'].isnull()]['horse_id']
-        for no_record_id in no_records:
-            horse_df.loc[(horse_df['horse_id'] == no_record_id)&(horse_df['horse_weight'].isnull()), 'horse_weight'] = horse_df[horse_df['horse_id'] == no_record_id]['horse_weight'].mean() 
-            horse_df.loc[(horse_df['horse_id'] == no_record_id)&(horse_df['horse_weight_dif'].isnull()), 'horse_weight_dif'] = 0 
-    except:
-        pass
+    horse_df['horse_weight'] = horse_df['horse_weight'].replace(u'\xa0', u'')#不要な文字の削除
+    horse_df['horse_weight'] = horse_df['horse_weight'].replace('.*計不.*', "", regex=True)
+    horse_df["horse_weight"] = horse_df["horse_weight"].replace('', np.nan)
+    horse_df['horse_weight_dif'] = horse_df["horse_weight"].astype(str).str.extract('\(([-|+]?\d*)\)', expand=True)#()の文字だけ取得し、horse_weight_difカラムに保存
+    horse_df['horse_weight'] = horse_df['horse_weight'].replace('\(([-|+]?\d*)\)', '', regex=True)#()の文字を削除
+    horse_df['horse_weight'] = pd.to_numeric(horse_df["horse_weight"], errors="coerce")#可能であれば、数値型に変換
+    horse_df['horse_weight_dif'] = horse_df['horse_weight_dif'].astype(str).str.rstrip('+')
+    horse_df['horse_weight_dif'] = pd.to_numeric(horse_df["horse_weight_dif"], errors="coerce")#可能であれば、数値型に変換
+    # horse_df['horse_weight'] = horse_df.groupby('race_id', group_keys=False)['horse_weight'].apply(lambda x: x.replace(np.nan, x.max()))#欠損値はそのレースの最大値に置換
+    # horse_df['horse_weight_dif'] = horse_df.groupby('race_id', group_keys=False)['horse_weight_dif'].apply(lambda x: x.fillna(x.max() if x.notna().any() else x))#欠損値はそのレースの最大値に置換
     return horse_df
 
 #tamer_id
 def tamer_id(horse_df):
+    horse_df['tamer_id'] = horse_df['tamer_id'].replace(u'\xa0', u'')
     horse_df['tamer_id'] = horse_df['tamer_id'].replace(np.nan, 'NaN')
     return horse_df
 
 #owner_id
 def owner_id(horse_df):
+    horse_df['owner_id'] = horse_df['owner_id'].replace(u'\xa0', u'')
     horse_df['owner_id'] = horse_df['owner_id'].replace(np.nan, 'NaN')
-    return horse_df
-
-#goal_time_dif
-def goal_time_dif(horse_df):
-    horse_df['goal_time_dif'] = horse_df.groupby('race_id')['goal_time'].diff().fillna(0).reset_index(drop=True)
-    horse_df['goal_time_dif'] = horse_df['goal_time_dif'].astype(float)
     return horse_df
 
 #burden_weight_rate
 def burden_weight_rate(horse_df):
-    horse_df['horse_weight'] = horse_df['horse_weight'].replace(np.nan, 0)
-    horse_df['horse_weight'] = horse_df['horse_weight'].astype(int)
-    horse_df['burden_weight'] = horse_df['burden_weight'].replace(np.nan, 0)
-    horse_df['burden_weight'] = horse_df['burden_weight'].astype(float)
     horse_df['burden_weight_rate'] = horse_df['burden_weight']/horse_df['horse_weight']
     return horse_df
 
 #avg_velocity
 def avg_velocity(horse_df,race_df):
-    # レース距離情報をmerge
-    race_tmp_df = race_df[["race_id", "distance"]]
+    race_tmp_df = race_df[["race_id", "distance"]]#レース距離情報をmerge
     horse_df = pd.merge(horse_df, race_tmp_df, on='race_id')
-    horse_df["distance"] = horse_df["distance"].astype(int)
     horse_df["avg_velocity"] = horse_df["distance"]/horse_df["goal_time"]
-    #オリジナルの削除
-    horse_df.drop(['distance'], axis=1, inplace=True)
+    horse_df.drop(['distance'], axis=1, inplace=True)#distanceの削除
     return horse_df
 
 #horse_name
@@ -412,7 +397,8 @@ def bday(horse_info_df):
 
 #producer_id
 def producer_id(horse_info_df):
-    horse_info_df.loc[horse_info_df['producer_id'] == 'owner.netkeiba.com', 'producer_id'] = pd.NA
+    horse_info_df.loc[horse_info_df['producer_id'] == 'owner.netkeiba.com', 'producer_id'] = np.nan #特定の文字の場合欠損値に置換
+    horse_info_df['producer_id'] = horse_info_df['producer_id'].replace(np.nan, 'NaN')
     return horse_info_df
 
 #production area
@@ -449,22 +435,45 @@ def inbreeding_1(horse_info_df):
 
 #inbreeding_2
 def inbreeding_2(horse_info_df):
-    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str).str.rstrip('.0')
+    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str)#.str.rstrip('.0')
     horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].replace(np.nan, 'NaN')
-
     return horse_info_df
 
 #father
+def father(horse_info_df):
+    horse_info_df['father'] = horse_info_df['father'].astype(str)
+    horse_info_df['father'] = horse_info_df['father'].replace(np.nan, 'NaN')
+    return horse_info_df
 
-#faths father
+#faths_father
+def faths_father(horse_info_df):
+    horse_info_df['faths_father'] = horse_info_df['faths_father'].astype(str)
+    horse_info_df['faths_father'] = horse_info_df['faths_father'].replace(np.nan, 'NaN')
+    return horse_info_df
 
-#faths mother
+#faths_mother
+def faths_mother(horse_info_df):
+    horse_info_df['faths_mother'] = horse_info_df['faths_mother'].astype(str)
+    horse_info_df['faths_mother'] = horse_info_df['faths_mother'].replace(np.nan, 'NaN')
+    return horse_info_df
 
 #mother
+def mother(horse_info_df):
+    horse_info_df['mother'] = horse_info_df['mother'].astype(str)
+    horse_info_df['mother'] = horse_info_df['mother'].replace(np.nan, 'NaN')
+    return horse_info_df
 
-#moths father
+#moths_father
+def moths_father(horse_info_df):
+    horse_info_df['moths_father'] = horse_info_df['moths_father'].astype(str)
+    horse_info_df['moths_father'] = horse_info_df['moths_father'].replace(np.nan, 'NaN')
+    return horse_info_df
 
-#moths mother
+#moths_mother
+def moths_mother(horse_info_df):
+    horse_info_df['moths_mother'] = horse_info_df['moths_mother'].astype(str)
+    horse_info_df['moths_mother'] = horse_info_df['moths_mother'].replace(np.nan, 'NaN')
+    return horse_info_df
 
 ##########horse_race_df##########
 #date
@@ -508,12 +517,12 @@ def delete_race(horse_race_df,race_date_dict):
 
 #burden_weight
 
+#race_course
 #distance
-def distance(horse_race_df):
-    horse_race_df['ground_type'] = horse_race_df['distance'].astype(str).str.extract('(芝|ダ)').fillna(0)
-    horse_race_df['distance'] = horse_race_df['distance'].astype(str) .str.extract('(\d+)').fillna(0).astype(int) 
-    print(horse_race_df['ground_type'].unique())  
-    return horse_race_df
+# def distance(horse_race_df):
+#     horse_race_df['ground_type'] = horse_race_df['distance'].astype(str).str.extract('(芝|ダ)').fillna(0)
+#     horse_race_df['distance'] = horse_race_df['distance'].astype(str) .str.extract('(\d+)').fillna(0).astype(int)  
+#     return horse_race_df
 
 #groud_status
 
@@ -525,10 +534,11 @@ def distance(horse_race_df):
 
 #pace
 def pace(horse_race_df):
-    horse_race_df['pace']  = horse_race_df['pace'].replace('', '0-0')
-    horse_race_df['pace']  = horse_race_df['pace'].replace(' ', '0-0')
-    horse_race_df['pace']  = horse_race_df['pace'].replace(np.nan, '0-0')
-    horse_race_df['pace'] = horse_race_df['pace'].apply(lambda x: float(x.split('-')[0]) if isinstance(x, str) else np.nan).mean()
+    horse_race_df['pace'] = horse_race_df['pace'].replace(u'\xa0', u'')
+    horse_race_df['pace'] = horse_race_df['pace'].replace('', np.nan)
+    horse_race_df["pace"] = horse_race_df["pace"].apply(lambda x: mean([float(n) for n in (x.split("-"))]) if (type(x) is str and len(x) > 0) else float(x))
+    #horse_df['pace'] = horse_df.groupby('race_id', group_keys=False)['pace'].apply(lambda x: x.fillna(x.max()))
+    horse_race_df.dropna(subset=['pace'], inplace=True)
     return horse_race_df
 
 #last_time
@@ -536,7 +546,7 @@ def pace(horse_race_df):
 #horse_weight
 #上にある
 
-#runner-up-horse-id
+#runner_up_horse_id
 
 #prize
 def prize(horse_race_df):
