@@ -11,7 +11,9 @@ import time
 from selenium.webdriver.common.by import By
 
 def open_chrome(URL):
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    op = webdriver.ChromeOptions()
+    op.add_argument('headless')
+    driver = webdriver.Chrome(ChromeDriverManager().install(),options=op)
     wait = WebDriverWait(driver, 3)
     driver.get(URL)
     time.sleep(1)
