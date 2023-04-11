@@ -14,5 +14,5 @@ open_chrome.py : setup chrome webdriver
 set_url.py : setup url for scraping  
 upload_cloudstorage.py : upload data to google cloud strage  
 
-main/ : after cleansing data
+main/ : after cleansing data  
 csv/ : before cleansing data
