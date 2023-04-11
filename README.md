@@ -30,7 +30,7 @@ hope you run it with no issue
 # Dir info
 dataset/ : for making models  
 keiba/ : for front and backend  
-keiba/ : for djnago project  
+keiba_project/ : for djnago project  
 .gitignore : for hiding secret keys  
 Procfile : for heroku server  
 db.sqlite3 : for database  
