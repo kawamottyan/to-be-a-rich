@@ -1,7 +1,7 @@
 '''URLを設定する'''
 
 def horse_target():
-    URL = "https://race.netkeiba.com/race/shutuba.html?race_id=202309020411&rf=race_list"#race_listのページを指定
+    URL = "https://race.netkeiba.com/race/shutuba.html?race_id=202306030811&rf=race_submenu"#race_listのページを指定
     return URL
 
 def race_database():

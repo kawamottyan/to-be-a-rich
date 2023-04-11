@@ -24,7 +24,7 @@ import requests
 from google.cloud import storage
 
 #保存先のディレクトリ
-dir = 'osaka'
+dir = 'satsuki'
 
 def html():
     URL = set_url.horse_target()

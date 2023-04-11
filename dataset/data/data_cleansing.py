@@ -85,6 +85,7 @@ def distance(race_df):
 
 #weather
 def weather(race_df):
+    race_df['weather'] = race_df['weather'].astype(str).replace(u'\xa0', u'')
     race_df['weather'] = race_df['weather'].astype(str).str.strip('天候 :')
     race_df['weather'] = race_df['weather'].replace('.*(晴).*', 1,regex=True)
     race_df['weather'] = race_df['weather'].replace('.*(曇).*', 2,regex=True)
@@ -154,6 +155,7 @@ def where_racecourse(race_df):
 def total_horse_number(race_df):
     race_df['total_horse_number'] = race_df['total_horse_number'].replace(u'\xa0', u'')
     race_df['total_horse_number'] = race_df['total_horse_number'].astype(str).str.extract('(\d+)')
+    race_df.dropna(subset=['total_horse_number'], inplace=True)
     race_df['total_horse_number'] = race_df['total_horse_number'].astype(int)
     return race_df
 
@@ -227,9 +229,12 @@ def rank(horse_df):
     horse_df.fillna(value={'is_down': 0}, inplace=True)
     horse_df['is_down'] = horse_df['is_down'].replace('(降)', 1)
     ## 余分な文字を削除
+    horse_df['rank'] = horse_df['rank'].replace(u'\xa0', u'')
     horse_df['rank'] = horse_df['rank'].apply(lambda x: x.replace("(降)", ""))
     horse_df['rank'] = horse_df['rank'].apply(lambda x: x.replace("(再)", ""))
     horse_df = horse_df[(horse_df['rank'] != "取") & (horse_df['rank'] != "除") & (horse_df['rank'] != "失") & (horse_df['rank'] != "中")]
+    horse_df['rank'] = horse_df['rank'].replace('', np.nan)
+    horse_df.dropna(subset=['rank'], inplace=True)
     horse_df['rank'] = horse_df['rank'].astype(int)
     return horse_df
 
