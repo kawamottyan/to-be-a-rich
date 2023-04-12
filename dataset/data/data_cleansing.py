@@ -442,6 +442,7 @@ def inbreeding_1(horse_info_df):
 def inbreeding_2(horse_info_df):
     horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].astype(str)#.str.rstrip('.0')
     horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].replace(np.nan, 'NaN')
+    horse_info_df['inbreeding_2'] = horse_info_df['inbreeding_2'].replace('None', 'NaN')
     return horse_info_df
 
 #father

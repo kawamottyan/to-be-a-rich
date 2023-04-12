@@ -1,4 +1,4 @@
-date,where_racecourse,weather,race_round,race_title,race_id,total_horse_number,frame_number,horse_number,odds,popular,rank,rider_id,burden_weight,race_course,ground_status,goal_time,goal_time_dif,half_way_rank,pace,last_time,horse_weight,runner_up_horse_id,prize,horse_id,target_race_id
+date,where_racecourse,weather,race_round,race_title,race_id,total_horse_number,frame_number,horse_number,odds,popular,rank,rider_id,burden_weight,race_course,ground_status,goal_time,goal_time_dif,half_way_rank,pace,last_time,horse_weight,wined_horse_id,prize,horse_id,target_race_id
 2010/09/01,大井,晴,11,アルテミス賞競走,201044090111,12,8,12,39.9,10,7,00423,55,ダ1800,良,1:54.2,0.8,12-11-11-11,37.4-39.1,37.9,494(-7),2005103853, ,2003100697,200606030811
 2010/08/15,大井,晴,9,ダイアモンドターン賞,201044081509,10,7,8,20.3,7,10,00423,54,ダ1800,良,1:55.5,1.4,5-5-5-5,38.4-37.9,38.8,501(+11),2003110185, ,2003100697,200606030811
 2010/07/29,大井,雨,11,盛夏賞競走,201044072911,13,6,8,27.3,8,9,00423,55,ダ1800,不,1:56.0,2.6,12-12-10-10,37.2-38.6,39.5,490(-11),2003100512, ,2003100697,200606030811
