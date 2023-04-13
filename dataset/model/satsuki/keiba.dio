@@ -1,0 +1,75 @@
+<mxfile host="65bd71144e">
+    <diagram id="O5n5XSg9uceezMNs3Kws" name="Page-1">
+        <mxGraphModel dx="361" dy="239" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="57" value="horse_id" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="590" width="160" height="260" as="geometry">
+                        <mxRectangle x="90" y="590" width="90" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="58" value="+bday&#10;+tamer_id&#10;+owner_id&#10;+producer_id&#10;+production_area&#10;+lifetime_record&#10;+wined_race_title&#10;+inbreeding_1&#10;+inbreeding_2&#10;+father&#10;+faths_father&#10;+faths_mother&#10;+mother&#10;+moths_father&#10;+moths_mother" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" vertex="1" parent="57">
+                    <mxGeometry y="30" width="160" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="horse_info_df" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="560" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" value="競走馬の基本情報&lt;br&gt;に関するデータ" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="220" y="510" width="130" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="race_id" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="370" y="90" width="160" height="480" as="geometry">
+                        <mxRectangle x="370" y="90" width="90" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="63" value="+race_round&#9;&#10;+race_title&#10;+weather&#9;&#10;+ground_status&#9;&#10;+date&#9;&#10;+where_racecourse&#10;+total_horse_number&#10;+frame_number_first&#10;+horse_number_first&#10;+frame_number_second&#10;+horse_number_second&#10;+frame_number_third&#10;+horse_number_third&#10;+tansyo&#10;+hukusyo_first&#10;+hukusyo_second&#10;+hukusyo_third&#10;+wakuren&#10;+umaren&#10;+wide_1_2&#10;+wide_1_3&#10;+wide_2_3&#10;+umatan&#10;+renhuku3&#10;+rentan3&#10;+race_rank&#10;+is_obstacle&#10;+ground_type&#10;+is_left_right_straight&#10;+distance&#10;+datetime" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" vertex="1" parent="62">
+                    <mxGeometry y="30" width="160" height="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="64" value="race_df" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="370" y="60" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="今回出場するレース&lt;br&gt;に関するデータ" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="500" y="10" width="130" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="horse_id" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="580" y="190" width="160" height="510" as="geometry">
+                        <mxRectangle x="580" y="190" width="90" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="29" value="+date&#10;+where_racecourse&#10;+weather&#10;+race_round&#10;+race_title&#10;+race_id&#10;+total_horse_number&#10;+frame_number&#10;+horse_number&#10;+odds&#10;+popular&#10;+rank&#10;+rider_id&#10;+burden_weight&#10;+ground_status&#10;+goal_time&#10;+goal_time_dif&#10;+half_way_rank&#10;+pace&#10;+last_time&#10;+horse_weight&#10;+wined_horse_id&#10;+horse_id&#10;+target_race_id&#10;+race_rank&#10;+horse_weight_dif&#10;+is_down&#10;+burden_weight_rate&#10;+is_obstacle&#10;+ground_type&#10;+is_left_right_straight&#10;+distance&#10;+race_date" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" vertex="1" parent="28">
+                    <mxGeometry y="30" width="160" height="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="horse_race_df" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="580" y="160" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="過去出場したレース&lt;br&gt;に関するデータ" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="710" y="110" width="130" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="70" style="edgeStyle=none;html=1;endArrow=ERone;endFill=0;startArrow=ERone;startFill=0;" edge="1" parent="1" source="30" target="57">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="horse_id" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;align=center;fontSize=14;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="100" width="160" height="340" as="geometry">
+                        <mxRectangle x="90" y="100" width="90" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="32" value="race_id&#10;rank&#10;frame_number&#10;horse_number&#10;burden_weight&#10;rider_id&#10;goal_time&#10;goal_time_dif&#10;half_way_rank&#10;last_time&#10;odds&#10;popular&#10;horse_weight&#10;tamer_id&#10;owner_id&#10;is_down&#10;age&#10;sex&#10;horse_weight_dif&#10;burden_weight_rate&#10;avg_velocity" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" vertex="1" parent="30">
+                    <mxGeometry y="26" width="160" height="314" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="horse_df" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="70" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="69" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.015;entryY=0.364;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=ERone;endFill=0;startArrow=ERone;startFill=0;" edge="1" parent="1" source="32" target="63">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="71" style="edgeStyle=none;html=1;endArrow=ERmany;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=ERone;startFill=0;" edge="1" parent="1" source="32" target="29">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="競走馬のレース情報&lt;br&gt;に関するデータ" style="shape=note;size=20;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="210" y="10" width="130" height="100" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
