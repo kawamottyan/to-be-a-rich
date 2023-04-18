@@ -25,7 +25,7 @@ import requests
 from google.cloud import storage
 
 #保存先のディレクトリ
-dir = 'satsuki'
+dir = 'tennosyoharu'
 race_date_dict = {}
 
 def html():
@@ -33,7 +33,7 @@ def html():
     driver,wait = open_chrome.open_chrome(URL)
 
     #検索条件の記述
-    race_name = "皐月賞"
+    race_name = "天皇賞(春)"
     year = 2006
     month = 1
     end_year = 2022
