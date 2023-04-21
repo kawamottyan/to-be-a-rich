@@ -100,12 +100,12 @@ def weather(race_df):
 
 #ground_status
 def ground_status(race_df):
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(不良).*', 4,regex=True)
+    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 2,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(良).*', 1,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(稍).*', 2,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(重).*', 3,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(稍重).*', 2,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('.*(不).*', 5,regex=True)
-    race_df['ground_status'] = race_df['ground_status'].replace('.*(不良).*', 4,regex=True)
     race_df['ground_status'] = race_df['ground_status'].replace('', np.nan)
     race_df['ground_status'] = race_df['ground_status'].replace(np.nan, 0)
     return race_df
