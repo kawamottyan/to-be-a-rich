@@ -139,7 +139,7 @@ def horse_race_columns():
                         'pace',
                         'last_time',
                         'horse_weight',
-                        'runner_up_horse_id',
+                        'wined_horse_id',
                         'prize'
                         ]
     return horse_race_columns
