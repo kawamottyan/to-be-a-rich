@@ -34,7 +34,7 @@ def html():
 
     #検索条件の記述
     race_name = ""
-    year = 2004
+    year = 2012
     month = 1
     end_year = 2022
     end_month = 12
@@ -197,72 +197,72 @@ def get_race_html(race_id, html):
     except IndexError:
         race_list.append("0")
 
-    # horse data
-    for rank in range(1, len(result_rows)):
-        horse_list = [race_id]
-        result_row = result_rows[rank].findAll("td")
-        # rank
-        horse_list.append(result_row[0].get_text())
-        # frame_number
-        horse_list.append(result_row[1].get_text())
-        # horse_number
-        horse_list.append(result_row[2].get_text())
-        # horse_id
-        horse_list.append(str(result_row[3].find('a').get('href').split("/")[-2]))
-        # sex_and_age
-        horse_list.append(result_row[4].get_text())
-        # burden_weight
-        horse_list.append(result_row[5].get_text())
-        # rider_id
-        horse_list.append(str(result_row[6].find('a').get('href').split("/")[-2]))
-        # goal_time
-        horse_list.append(result_row[7].get_text())
-        # goal_time_dif
-        horse_list.append(result_row[8].get_text())
-        # time_value(premium)
-        horse_list.append(result_row[9].get_text())
-        # half_way_rank
-        horse_list.append(result_row[10].get_text())
-        # last_time(上り)
-        horse_list.append(result_row[11].get_text())
-        # odds
-        horse_list.append(result_row[12].get_text())
-        # popular
-        horse_list.append(result_row[13].get_text())
-        # horse_weight
-        horse_list.append(result_row[14].get_text())
-        # tame_time(premium)
-        horse_list.append(result_row[15].get_text())
-        # 16:コメント、17:備考
-        # tamer_id
-        horse_list.append(str(result_row[18].find('a').get('href').split("/")[-2]))
-        # owner_id
-        horse_list.append(str(result_row[19].find('a').get('href').split("/")[-2]))
+    # # horse data
+    # for rank in range(1, len(result_rows)):
+    #     horse_list = [race_id]
+    #     result_row = result_rows[rank].findAll("td")
+    #     # rank
+    #     horse_list.append(result_row[0].get_text())
+    #     # frame_number
+    #     horse_list.append(result_row[1].get_text())
+    #     # horse_number
+    #     horse_list.append(result_row[2].get_text())
+    #     # horse_id
+    #     horse_list.append(str(result_row[3].find('a').get('href').split("/")[-2]))
+    #     # sex_and_age
+    #     horse_list.append(result_row[4].get_text())
+    #     # burden_weight
+    #     horse_list.append(result_row[5].get_text())
+    #     # rider_id
+    #     horse_list.append(str(result_row[6].find('a').get('href').split("/")[-2]))
+    #     # goal_time
+    #     horse_list.append(result_row[7].get_text())
+    #     # goal_time_dif
+    #     horse_list.append(result_row[8].get_text())
+    #     # time_value(premium)
+    #     horse_list.append(result_row[9].get_text())
+    #     # half_way_rank
+    #     horse_list.append(result_row[10].get_text())
+    #     # last_time(上り)
+    #     horse_list.append(result_row[11].get_text())
+    #     # odds
+    #     horse_list.append(result_row[12].get_text())
+    #     # popular
+    #     horse_list.append(result_row[13].get_text())
+    #     # horse_weight
+    #     horse_list.append(result_row[14].get_text())
+    #     # tame_time(premium)
+    #     horse_list.append(result_row[15].get_text())
+    #     # 16:コメント、17:備考
+    #     # tamer_id
+    #     horse_list.append(str(result_row[18].find('a').get('href').split("/")[-2]))
+    #     # owner_id
+    #     horse_list.append(str(result_row[19].find('a').get('href').split("/")[-2]))
 
-        horse_list_list.append(horse_list)
+    #     horse_list_list.append(horse_list)
 
-    horse_href_list=[]
-    for row in range(1, len(result_rows)):
-        result_row=result_rows[row]
-        result_data = result_row.findAll('td')[3]
-        horse_href_list.append("https://db.netkeiba.com"+result_data.find('a').get('href'))        
+    # horse_href_list=[]
+    # for row in range(1, len(result_rows)):
+    #     result_row=result_rows[row]
+    #     result_data = result_row.findAll('td')[3]
+    #     horse_href_list.append("https://db.netkeiba.com"+result_data.find('a').get('href'))        
 
-    HTML_HORSE_DIR = "html/"+dir+"/horsepage/"
-    if not os.path.isdir(HTML_HORSE_DIR):
-        os.makedirs(HTML_HORSE_DIR)   
+    # HTML_HORSE_DIR = "html/"+dir+"/horsepage/"
+    # if not os.path.isdir(HTML_HORSE_DIR):
+    #     os.makedirs(HTML_HORSE_DIR)   
 
-    for url in horse_href_list:
-        list = url.split("/")
-        horse_id = list[-2]
-        save_file_path = HTML_HORSE_DIR+"-"+race_id+"-"+horse_id+"-"+'.html'
-        response = requests.get(url)
-        response.encoding = response.apparent_encoding
-        html = response.text
-        time.sleep(5)
-        with open(save_file_path, 'w', encoding='cp932', errors='replace') as file:
-            file.write(html)
+    # for url in horse_href_list:
+    #     list = url.split("/")
+    #     horse_id = list[-2]
+    #     save_file_path = HTML_HORSE_DIR+"-"+race_id+"-"+horse_id+"-"+'.html'
+    #     response = requests.get(url)
+    #     response.encoding = response.apparent_encoding
+    #     html = response.text
+    #     time.sleep(5)
+    #     with open(save_file_path, 'w', encoding='cp932', errors='replace') as file:
+    #         file.write(html)
 
-    return race_list, horse_list_list, HTML_HORSE_DIR
+    return race_list, horse_list_list, #HTML_HORSE_DIR
 
 def get_horse_html(horse_id, race_id, html):
     horse_list = [horse_id]
@@ -363,6 +363,7 @@ def csv(HTML_RACE_DIR):
         os.makedirs(CSV_RACE_DIR)
     race_csv = CSV_RACE_DIR+"race"+".csv"
     horse_csv = CSV_RACE_DIR+"horse"+".csv"
+    horse_df = pd.DataFrame()#########後で消す
 
     #上記で定義した関数を使って、各要素をデータフレームに保存
     
@@ -375,15 +376,18 @@ def csv(HTML_RACE_DIR):
                 html = f.read()
                 list = file_name.split(".")
                 race_id = list[-2]
-                race_list, horse_list_list, HTML_HORSE_DIR = get_race_html(race_id, html) 
-                for horse_list in horse_list_list:
-                    horse_se = pd.Series(horse_list, index=horse_df.columns)
-                    horse_df = pd.concat([horse_df, horse_se.to_frame().T], ignore_index=True)
+                
+                
+                race_list, horse_list_list = get_race_html(race_id, html) #あとでしたと入れ替える
+                #race_list, horse_list_list, HTML_HORSE_DIR = get_race_html(race_id, html) 
+                # for horse_list in horse_list_list:
+                #     horse_se = pd.Series(horse_list, index=horse_df.columns)
+                #     horse_df = pd.concat([horse_df, horse_se.to_frame().T], ignore_index=True)
                 race_se = pd.Series(race_list, index=race_df.columns )
                 race_df = pd.concat([race_df, race_se.to_frame().T], ignore_index=True)
     #dfをcsvに書き出し
     race_df.to_csv(race_csv, header=True, index=False)
-    horse_df.to_csv(horse_csv, header=True, index=False)
+    # horse_df.to_csv(horse_csv, header=True, index=False)
 
     # CSV_RACE_DIR = CSV_RACE_DIR + "race.csv"
     # CSV_HORSE_DIR = CSV_RACE_DIR + "horse.csv"
@@ -396,21 +400,21 @@ def csv(HTML_RACE_DIR):
     horse_info_df = pd.DataFrame(columns=columns.horse_info_columns())
     horse_race_df = pd.DataFrame()
         
-    if os.path.isdir(HTML_HORSE_DIR):
-        file_list = os.listdir(HTML_HORSE_DIR)
-        for file_name in file_list:
-            with open(HTML_HORSE_DIR+file_name, "r") as f:
-                html = f.read()
-                list = file_name.split("-")
-                horse_id = list[-2]
-                race_id = list[-3]
-                horse_list , horse_race_tmp_df = get_horse_html(horse_id, race_id, html) 
-                horse_se = pd.Series(horse_list, index=horse_info_df.columns)
-                horse_info_df = pd.concat([horse_info_df, horse_se.to_frame().T], ignore_index=True)
-                horse_race_df = pd.concat([horse_race_df, horse_race_tmp_df], axis=0, ignore_index=True)
-    #dfをcsvに書き出し
-    horse_info_df.to_csv(horse_info_csv, header=True, index=False)
-    horse_race_df.to_csv(horse_race_csv, header=True, index=False)
+    # if os.path.isdir(HTML_HORSE_DIR):
+    #     file_list = os.listdir(HTML_HORSE_DIR)
+    #     for file_name in file_list:
+    #         with open(HTML_HORSE_DIR+file_name, "r") as f:
+    #             html = f.read()
+    #             list = file_name.split("-")
+    #             horse_id = list[-2]
+    #             race_id = list[-3]
+    #             horse_list , horse_race_tmp_df = get_horse_html(horse_id, race_id, html) 
+    #             horse_se = pd.Series(horse_list, index=horse_info_df.columns)
+    #             horse_info_df = pd.concat([horse_info_df, horse_se.to_frame().T], ignore_index=True)
+    #             horse_race_df = pd.concat([horse_race_df, horse_race_tmp_df], axis=0, ignore_index=True)
+    # #dfをcsvに書き出し
+    # horse_info_df.to_csv(horse_info_csv, header=True, index=False)
+    # horse_race_df.to_csv(horse_race_csv, header=True, index=False)
 
     return race_df, horse_df, horse_info_df, horse_race_df
 
